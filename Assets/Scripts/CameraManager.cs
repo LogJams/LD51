@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerManager : MonoBehaviour
+public class CameraManager : MonoBehaviour
 {
-
     private Camera _mainCamera;
 
     private Vector3 _viewOffset = new Vector3(3.0f, 3.0f, 3.0f);

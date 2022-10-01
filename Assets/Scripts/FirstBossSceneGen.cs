@@ -9,12 +9,15 @@ public class FirstBossSceneGen : MonoBehaviour
     public GameObject waterTile;
     public GameObject grassTile;
 
+    public GameObject player;
+
     private List<GameObject> Floor = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
     {
         GenerateFloorTiles();
+        GeneratePlayer();
     }
 
     // Update is called once per frame
@@ -44,6 +47,12 @@ public class FirstBossSceneGen : MonoBehaviour
                 Floor.Add(newTile);
             }
         }
+    }
+
+    void GeneratePlayer()
+    {
+        GameObject mainPlayer = Instantiate(player) as GameObject;
+        mainPlayer.transform.position = new Vector3(10, 2, 10);
     }
 
     void FindTile()
