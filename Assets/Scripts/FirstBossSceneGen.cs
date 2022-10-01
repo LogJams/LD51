@@ -9,12 +9,15 @@ public class FirstBossSceneGen : MonoBehaviour
     public GameObject waterTile;
     public GameObject grassTile;
 
+    public GameObject player;
+
     private List<GameObject> Floor = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
     {
         GenerateFloorTiles();
+        GeneratePlayer();
     }
 
     // Update is called once per frame
@@ -40,11 +43,16 @@ public class FirstBossSceneGen : MonoBehaviour
                     iVal += 0.5f;
 
                 newTile.transform.position = new Vector3(iVal, 0, j * Mathf.Sqrt(3) / 2);
-                newTile.transform.Rotate(90, 0, 0);
 
                 Floor.Add(newTile);
             }
         }
+    }
+
+    void GeneratePlayer()
+    {
+        GameObject mainPlayer = Instantiate(player) as GameObject;
+        mainPlayer.transform.position = new Vector3(10, 2, 10);
     }
 
     void FindTile()
@@ -53,14 +61,11 @@ public class FirstBossSceneGen : MonoBehaviour
 
         RaycastHit hit;
 
-        if (Input.GetMouseButtonDown(0))
+        // Does the ray intersect any objects excluding the player layer
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, layerMask))
         {
-            // Does the ray intersect any objects excluding the player layer
-            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, layerMask))
-            {
-                Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
-                Debug.Log("Did Hit");
-            }
+            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
+            Debug.Log("Did Hit");
         }
     }
 }
