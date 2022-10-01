@@ -20,7 +20,7 @@ public class FirstBossSceneGen : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        FindTile()
+        FindTile();
     }
 
     void GenerateFloorTiles()
@@ -54,11 +54,13 @@ public class FirstBossSceneGen : MonoBehaviour
         RaycastHit hit;
 
         if (Input.GetMouseButtonDown(0))
-        // Does the ray intersect any objects excluding the player layer
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, layerMask))
         {
-            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
-            Debug.Log("Did Hit");
+            // Does the ray intersect any objects excluding the player layer
+            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, layerMask))
+            {
+                Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
+                Debug.Log("Did Hit");
+            }
         }
     }
 }
