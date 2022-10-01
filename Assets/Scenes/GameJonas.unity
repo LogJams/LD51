@@ -345,9 +345,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae0b8748bbeb30540bc20f4cb0f1f481, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dirtTile: {fileID: 8029409925224236742, guid: d80520b37215f5948b82d16a508be8eb, type: 3}
-  waterTile: {fileID: 6077327212564162162, guid: 7ee0e37a80012944084db86a8584cafa, type: 3}
-  grassTile: {fileID: 1110571461985246131, guid: db6f46236b2d64d44a9620ee9b1aefb9, type: 3}
+  dirtTile: {fileID: 3693305612158679851, guid: 2e8d701f3d61ee04b9e91751eb051418, type: 3}
+  waterTile: {fileID: 3693305612158679851, guid: 6d03ae1846bc09e40b62b10dac9a5708, type: 3}
+  grassTile: {fileID: 3693305612158679851, guid: ce1d406a6782aed42afa942c7c0f1fd2, type: 3}
 --- !u!1001 &1578840678
 PrefabInstance:
   m_ObjectHideFlags: 0
