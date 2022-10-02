@@ -22,7 +22,7 @@ public class TrapBossSceneGen : MonoBehaviour
 
     public GameObject huntingBoss;
 
-    public BattleTimeManager timer;
+    private BattleTimeManager timer;
 
     private PlayerManager playerManager;
     private GameObject player;
@@ -155,8 +155,8 @@ public class TrapBossSceneGen : MonoBehaviour
 
     private int GetFloorTypeFromIndex(Vector2Int idx)
     {
-        if ((idx - new Vector2Int((int)(0.5f*SCENE_WIDTH), (int)(0.5f*SCENE_HEIGHT))).sqrMagnitude < 3)
-            return (int)TerrainTypes.water;
+        // if ((idx - new Vector2Int((int)(0.5f*SCENE_WIDTH), (int)(0.5f*SCENE_HEIGHT))).sqrMagnitude < 3)
+        //     return (int)TerrainTypes.water;
                 
         return (int)TerrainTypes.grass;
     }
