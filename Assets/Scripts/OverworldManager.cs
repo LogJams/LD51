@@ -409,7 +409,7 @@ public class OverworldManager : MonoBehaviour {
             for (uint j = 0; j < WORLD_HEIGHT; j++) {
                 //set the hexagon's position
                 float dx = 0;
-                if (j % 2 == 0) {
+                if (j % 2 == 1) {
                     dx = 0.5f;
                 }
                 Vector3 pos = new Vector3(i + dx, 0, j * Y_SPACING);
