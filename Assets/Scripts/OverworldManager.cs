@@ -79,6 +79,12 @@ public class OverworldManager : MonoBehaviour {
         }
         else
         {
+            if (Input.GetMouseButtonUp(1))
+            {
+                if (currentpath.Count > 0 && playerManager.isMoving)
+                    EndTurn();
+            }
+
             playerManager.MovePlayer(currentpath, pathIndicators);
         }
     }
@@ -452,11 +458,26 @@ public class OverworldManager : MonoBehaviour {
             currentpath = path;
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonUp(0))
         {
-            if (currentpath.Count > 0)
+            if (currentpath.Count > 0 && !playerManager.isMoving)
                 playerManager.isMoving = true;
         }
     }
 
+    public void EndTurn()
+    {
+        if (currentpath.Count > 0)
+        {
+            // Clear path except for current goal
+            Vector2Int goalPos = currentpath[currentpath.Count - 1];
+            currentpath.Clear();
+            currentpath.Add(goalPos);
+            
+            for (int i = pathIndicators.Count - 1; i >= 0; i--)
+                Destroy(pathIndicators[i]);
+        
+            pathIndicators.Clear();
+        }
+    }
 }

@@ -61,23 +61,33 @@ public class FirstBossSceneGen : MonoBehaviour
             }
         } else
         {
+            if (Input.GetMouseButtonUp(1))
+            {
+                if (currentpath.Count > 0 && playerManager.isMoving)
+                    EndTurn();
+            }
+
             playerManager.MovePlayer(currentpath, pathIndicators);
         }
     }
 
-
     public void EndTurn(System.Object src, EventArgs e) {
+        EndTurn();
+    }
+
+    public void EndTurn()
+    {
         Vector2Int goalPos = currentpath[currentpath.Count - 1];
         currentpath.Clear();
 
         currentpath.Add(goalPos);
 
-        for (int i = pathIndicators.Count-1; i >= 0; i--) {
+        for (int i = pathIndicators.Count - 1; i >= 0; i--)
+        {
             Destroy(pathIndicators[i]);
         }
         pathIndicators.Clear();
-
-    } 
+    }
 
 
     void ClearPath()
@@ -121,8 +131,6 @@ public class FirstBossSceneGen : MonoBehaviour
                 TerrainTypeMap[i, j] = GetRandomFloorType();
             }
         }
-
-
 
         //generate the final tilemap
         for (int j = 0; j < SCENE_HEIGHT; j++) {
@@ -188,7 +196,7 @@ public class FirstBossSceneGen : MonoBehaviour
             currentpath = path;
         }
 
-        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
+        if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             if (currentpath.Count > 0)
                 playerManager.isMoving = true;
