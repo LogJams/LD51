@@ -199,14 +199,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 124377831}
-  m_LocalRotation: {x: 0.49819475, y: 0.50179875, z: -0.50179875, w: 0.49819475}
-  m_LocalPosition: {x: -1, y: 16, z: 8.660254}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 90, y: 90.413, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &346264594
 GameObject:
   m_ObjectHideFlags: 0
@@ -301,54 +301,60 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &1693625672
-GameObject:
+--- !u!1001 &3841054908136373071
+PrefabInstance:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1693625674}
-  - component: {fileID: 1693625673}
-  m_Layer: 0
-  m_Name: Scene Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1693625673
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1693625672}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae0b8748bbeb30540bc20f4cb0f1f481, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dirtTile: {fileID: 3693305612158679851, guid: 2e8d701f3d61ee04b9e91751eb051418, type: 3}
-  waterTile: {fileID: 3693305612158679851, guid: 6d03ae1846bc09e40b62b10dac9a5708, type: 3}
-  grassTile: {fileID: 3693305612158679851, guid: ce1d406a6782aed42afa942c7c0f1fd2, type: 3}
-  cliffTile: {fileID: 3693305612158679851, guid: 07cc97ad5f20bcf469bd3aba5763e559, type: 3}
-  pathOutline: {fileID: 3693305612158679851, guid: c78a156e86894a54eb0e43acde78fc05, type: 3}
-  playerPrefab: {fileID: 1520096450731234602, guid: 1f9453aa98747644ea1c6f734b506d31, type: 3}
-  bossPrefab: {fileID: 4147607205445219921, guid: 54651eaec05b4774b91708ef7c36fd20, type: 3}
---- !u!4 &1693625674
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1693625672}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.01448679, y: 0.5034175, z: -0.16516626}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3658209789329665259, guid: 54651eaec05b4774b91708ef7c36fd20, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3658209789329665259, guid: 54651eaec05b4774b91708ef7c36fd20, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3658209789329665259, guid: 54651eaec05b4774b91708ef7c36fd20, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3658209789329665259, guid: 54651eaec05b4774b91708ef7c36fd20, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3658209789329665259, guid: 54651eaec05b4774b91708ef7c36fd20, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3658209789329665259, guid: 54651eaec05b4774b91708ef7c36fd20, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3658209789329665259, guid: 54651eaec05b4774b91708ef7c36fd20, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3658209789329665259, guid: 54651eaec05b4774b91708ef7c36fd20, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3658209789329665259, guid: 54651eaec05b4774b91708ef7c36fd20, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3658209789329665259, guid: 54651eaec05b4774b91708ef7c36fd20, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3658209789329665259, guid: 54651eaec05b4774b91708ef7c36fd20, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4147607205445219921, guid: 54651eaec05b4774b91708ef7c36fd20, type: 3}
+      propertyPath: m_Name
+      value: Turret Boss
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 54651eaec05b4774b91708ef7c36fd20, type: 3}

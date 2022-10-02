@@ -13,15 +13,10 @@ public class FirstBossSceneGen : MonoBehaviour
     public GameObject dirtTile;
     public GameObject waterTile;
     public GameObject grassTile;
-    public GameObject cliffTile;
 
     public GameObject pathOutline;
 
     public GameObject playerPrefab;
-
-
-    public GameObject bossPrefab;
-
 
     private GameObject player;
     private CharacterController controller;
@@ -43,7 +38,6 @@ public class FirstBossSceneGen : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currentpath = new List<Vector2Int>();
         GenerateTileDictionary();
         GenerateFloorTiles();
         GeneratePlayer();
@@ -75,41 +69,21 @@ public class FirstBossSceneGen : MonoBehaviour
         TileMapper = new Dictionary<TerrainTypes, GameObject>() {
             { TerrainTypes.path, dirtTile},
             { TerrainTypes.grass, grassTile},
-            { TerrainTypes.water, waterTile},
-            { TerrainTypes.cliff, cliffTile}
+            { TerrainTypes.water, waterTile}
         };
     }
 
-    void GenerateFloorTiles() {
-
-        for (int i  = 0; i < numberTilesX; i++) {
-            TerrainTypeMap[i, 0] = (int)TerrainTypes.cliff;
-            TerrainTypeMap[i, numberTilesZ-1] = (int)TerrainTypes.cliff;
-        }
-        for (int j = 0; j < numberTilesZ; j++) {
-            TerrainTypeMap[0, j] = (int)TerrainTypes.cliff;
-            TerrainTypeMap[numberTilesX - 1, j] = (int)TerrainTypes.cliff;
-        }
-
-        for (int j = 1; j < numberTilesZ-1; j++)
+    void GenerateFloorTiles()
+    {
+        for (int j = 0; j < numberTilesZ; j++)
         {
-            for (int i = 1; i < numberTilesX-1; i++)
+            for (int i = 0; i < numberTilesX; i++)
             {
                 // Draw a random tile
                 TerrainTypeMap[i, j] = GetRandomFloorType();
-            }
-        }
 
-
-
-
-
-
-
-        for (int j = 0; j < numberTilesZ; j++) {
-            for (int i = 0; i < numberTilesX ; i++) {
                 // Instantiate it
-                GameObject newTile = Instantiate(TileMapper[(TerrainTypes)TerrainTypeMap[i, j]]) as GameObject;
+                GameObject newTile = Instantiate(TileMapper[(TerrainTypes)TerrainTypeMap[i,j]]) as GameObject;
                 SetPosition(newTile, i, 0, j);
             }
         }
@@ -156,7 +130,7 @@ public class FirstBossSceneGen : MonoBehaviour
 
             List<Vector2Int> path = FindPath(start, goal);
 
-            //Debug.Log(path.Count);
+            Debug.Log(path.Count);
             foreach (Vector2Int wayPoint in path)
             {
                 GameObject newTile = Instantiate(pathOutline) as GameObject;
@@ -208,7 +182,7 @@ public class FirstBossSceneGen : MonoBehaviour
                 }
             }
 
-            foreach (Vector2Int neighbor in GetWalkableNeighbors(current))
+            foreach (Vector2Int neighbor in GetAllNeighbors(current))
             {
                 // Assuming one unit cost per neighbor
                 float new_cost = cost_so_far[current] + 1;
@@ -234,10 +208,8 @@ public class FirstBossSceneGen : MonoBehaviour
 
         foreach (Vector2Int neighbor in allNeighbors)
         {
-            if (IsWalkable(GetFloorType(TerrainTypeMap, neighbor))) {
-                Debug.Log(GetFloorType(TerrainTypeMap, neighbor));
+            if (IsWalkable(GetFloorType(TerrainTypeMap, neighbor)))
                 neighbors.Add(neighbor);
-            }
 
         }
 
