@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using static TerrainHelpers;
+using static HexagonHelpers;
 
 //spawn is where you start, boss is the location of the bosses, enemy is enemies+treasure, and friendly is friends
 public enum ZONE_TYPES {
@@ -32,6 +34,9 @@ public class OverworldManager : MonoBehaviour {
     public List<GameObject> terrainHexes;
     float Y_SPACING = 0.866024540378f; //sqrt(3)/2
 
+    // Path outline
+    public GameObject pathOutline;
+
     List<Zone> areas;
 
     //store the map and metadata about terrain generation here
@@ -41,10 +46,15 @@ public class OverworldManager : MonoBehaviour {
     GameObject[,] chunks;
 
     GameObject player;
+    private PlayerManager playerManager;
+
+    private List<Vector2Int> currentpath = new List<Vector2Int>();
+    private List<GameObject> pathIndicators = new List<GameObject>();
 
     void Awake() {
         Generate();
         player = GameObject.FindGameObjectWithTag("Player");
+        playerManager = new PlayerManager(player);
     }
 
     private void Update() {
@@ -60,6 +70,25 @@ public class OverworldManager : MonoBehaviour {
                 chunks[i, j].SetActive( visible );
             }
         }
+
+        // Do path stuff
+        if (!playerManager.isMoving)
+        {
+            ClearPath();
+            ShowPath();
+        }
+        else
+        {
+            playerManager.MovePlayer(currentpath, pathIndicators);
+        }
+    }
+
+    void ClearPath()
+    {
+        foreach (GameObject obj in pathIndicators)
+            Destroy(obj);
+
+        pathIndicators.Clear();
     }
 
     void Cleanup() {
@@ -395,5 +424,41 @@ public class OverworldManager : MonoBehaviour {
             }
         }
     }
+
+
+    void ShowPath()
+    {
+        // Show the potential path
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, 100))
+        {
+            var builder = new StringBuilder();
+
+            Vector2Int start = GetTileIndexFromObject(player.transform);
+            Vector2Int goal = GetTileIndexFromObject(hit.transform);
+
+            List<Vector2Int> path = FindPath(TerrainTypeMap, start, goal, 0, WORLD_HEIGHT - 1, 0, WORLD_WIDTH - 1);
+
+            Debug.Log(path.Count);
+            foreach (Vector2Int wayPoint in path)
+            {
+                GameObject newTile = Instantiate(pathOutline) as GameObject;
+                SetPosition(newTile, wayPoint.x, 0, wayPoint.y);
+
+                pathIndicators.Add(newTile);
+            }
+
+            currentpath = path;
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (currentpath.Count > 0)
+                playerManager.isMoving = true;
+        }
+    }
+
 
 }
