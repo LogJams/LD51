@@ -17,10 +17,10 @@ public class TurretBoss : MonoBehaviour {
     // Update is called once per frame
     void Update() {
 
-        Vector3 lookDir = playerTransform.position - transform.position;
-        lookDir.y = 0;
+        Vector3 lookAt = playerTransform.position;
+        lookAt.y = turret.position.y;
 
-        turret.LookAt(lookDir);
+        turret.LookAt(lookAt);
 
     }
 }
