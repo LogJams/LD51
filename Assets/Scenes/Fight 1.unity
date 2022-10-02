@@ -893,6 +893,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1526311219}
   - component: {fileID: 1526311218}
+  - component: {fileID: 1526311220}
   m_Layer: 0
   m_Name: Scene Manager
   m_TagString: Untagged
@@ -919,7 +920,6 @@ MonoBehaviour:
   pathOutline: {fileID: 3693305612158679851, guid: c78a156e86894a54eb0e43acde78fc05, type: 3}
   playerPrefab: {fileID: 1520096450731234602, guid: 1f9453aa98747644ea1c6f734b506d31, type: 3}
   turretBoss: {fileID: 4147607205445219921, guid: 54651eaec05b4774b91708ef7c36fd20, type: 3}
-  timer: {fileID: 533081393}
 --- !u!4 &1526311219
 Transform:
   m_ObjectHideFlags: 0
@@ -935,6 +935,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1526311220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1526311217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71b7bd59205bb2d45b6b3abfd8492fc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1585241861
 GameObject:
   m_ObjectHideFlags: 0
