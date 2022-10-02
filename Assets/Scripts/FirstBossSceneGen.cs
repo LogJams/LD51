@@ -77,11 +77,11 @@ public class FirstBossSceneGen : MonoBehaviour
 
     public void EndTurn()
     {
-        Vector2Int goalPos = currentpath[currentpath.Count - 1];
-        currentpath.Clear();
-
-        currentpath.Add(goalPos);
-
+        if (currentpath.Count > 1) {
+            Vector2Int goalPos = currentpath[currentpath.Count - 1];
+            currentpath.Clear();
+            currentpath.Add(goalPos);
+        }
         for (int i = pathIndicators.Count - 1; i >= 0; i--)
         {
             Destroy(pathIndicators[i]);
