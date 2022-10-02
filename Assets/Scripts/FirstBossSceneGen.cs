@@ -27,7 +27,7 @@ public class FirstBossSceneGen : MonoBehaviour
     private static int numberTilesX = 20;
     private static int numberTilesZ = 20;
 
-    private List<GameObject> _oldPathIndicators = new List<GameObject>();
+    private List<GameObject> pathIndicators = new List<GameObject>();
 
     private Dictionary<TerrainTypes, GameObject> TileMapper;
 
@@ -50,16 +50,16 @@ public class FirstBossSceneGen : MonoBehaviour
             ShowPath();
         } else
         {
-            playerManager.MovePlayer(currentpath);
+            playerManager.MovePlayer(currentpath, pathIndicators);
         }
     }
 
     void ClearPath()
     {
-        foreach (GameObject obj in _oldPathIndicators)
+        foreach (GameObject obj in pathIndicators)
             Destroy(obj);
 
-        _oldPathIndicators.Clear();
+        pathIndicators.Clear();
     }
 
     void GenerateTileDictionary()
@@ -86,14 +86,6 @@ public class FirstBossSceneGen : MonoBehaviour
                 SetPosition(newTile, i, 0, j);
             }
         }
-    }
-
-    private void SetPosition(GameObject obj, int indxX, int y, int indxZ)
-    {
-        float iVal = indxX;
-        if (indxZ % 2 == 1)
-            iVal += 0.5f;
-        obj.transform.position = new Vector3(iVal, y, indxZ * Mathf.Sqrt(3) / 2);
     }
 
     private int GetRandomFloorType()
@@ -136,7 +128,7 @@ public class FirstBossSceneGen : MonoBehaviour
                 GameObject newTile = Instantiate(pathOutline) as GameObject;
                 SetPosition(newTile, wayPoint.x, 0, wayPoint.y);
 
-                _oldPathIndicators.Add(newTile);
+                pathIndicators.Add(newTile);
             }
 
             currentpath = path;
@@ -164,7 +156,7 @@ public class FirstBossSceneGen : MonoBehaviour
                 GameObject newTile = Instantiate(pathOutline) as GameObject;
                 SetPosition(newTile, neighbor.x, 0, neighbor.y);
 
-                _oldPathIndicators.Add(newTile);
+                pathIndicators.Add(newTile);
             }
         }
     }
