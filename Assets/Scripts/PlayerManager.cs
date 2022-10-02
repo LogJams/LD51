@@ -6,7 +6,7 @@ using System;
 using static TerrainHelpers;
 using static HexagonHelpers;
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManager
 {
     public bool isMoving = false;
     private float movingSpeed = 3.0f;

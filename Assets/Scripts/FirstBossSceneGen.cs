@@ -39,12 +39,15 @@ public class FirstBossSceneGen : MonoBehaviour
 
     private int[,] TerrainTypeMap = new int[numberTilesX,numberTilesZ];
 
+    private void Awake() {
+        GeneratePlayer();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         GenerateTileDictionary();
         GenerateFloorTiles();
-        GeneratePlayer();
         timer.OnTimerEnd += EndTurn;
     }
 
@@ -136,6 +139,8 @@ public class FirstBossSceneGen : MonoBehaviour
 
         GameObject boss = Instantiate(turretBoss);
         SetPosition(boss, bossX, 0, bossZ);
+
+        boss.GetComponent<TurretBoss>().playerTransform = player.transform;
 
         List<Vector2Int> nbhd = GetAllNeighbors(new Vector2Int(bossX, bossZ));
 
