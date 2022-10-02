@@ -54,7 +54,7 @@ public class OverworldManager : MonoBehaviour {
     void Awake() {
         Generate();
         player = GameObject.FindGameObjectWithTag("Player");
-        playerManager = new PlayerManager(player);
+        playerManager = player.GetComponent<PlayerManager>();
     }
 
     private void Update() {
@@ -441,7 +441,6 @@ public class OverworldManager : MonoBehaviour {
 
             List<Vector2Int> path = FindPath(TerrainTypeMap, start, goal, 0, WORLD_HEIGHT - 1, 0, WORLD_WIDTH - 1);
 
-            Debug.Log(path.Count);
             foreach (Vector2Int wayPoint in path)
             {
                 GameObject newTile = Instantiate(pathOutline) as GameObject;
@@ -459,6 +458,5 @@ public class OverworldManager : MonoBehaviour {
                 playerManager.isMoving = true;
         }
     }
-
 
 }

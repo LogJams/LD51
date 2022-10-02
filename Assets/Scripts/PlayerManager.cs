@@ -8,15 +8,15 @@ using static HexagonHelpers;
 
 public class PlayerManager : MonoBehaviour
 {
+    public GameObject player;
+
     public bool isMoving = false;
     private float movingSpeed = 3.0f;
 
-    private GameObject player;
     private CharacterController controller;
 
-    public PlayerManager(GameObject _player)
+    public void Awake()
     {
-        player = _player;
         controller = player.GetComponent<CharacterController>();
     }
 
