@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4030700878988455027}
   - component: {fileID: 729739914357260205}
   - component: {fileID: 1444150213535352993}
+  - component: {fileID: 3931121956338197066}
   - component: {fileID: 4601686063701744940}
   m_Layer: 0
   m_Name: Player
@@ -131,6 +132,20 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3931121956338197066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1520096450731234602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b70a4eb2018f0654688203b81e686132, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PitfallCube: {fileID: 2437611272950423931, guid: 28393c96760e201468345ac903f3f883, type: 3}
+  PitfallLine: {fileID: 7160131119498258979, guid: a1ba611e492837f4d8df1c707d2c4489, type: 3}
 --- !u!114 &4601686063701744940
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -145,3 +160,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1520096450731234602}
   isMoving: 0
+  currentTilePositon: {x: 0, y: 0, z: 0}
