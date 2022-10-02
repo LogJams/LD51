@@ -46,6 +46,7 @@ public class TrapBossSceneGen : MonoBehaviour
     {
         GenerateTileDictionary();
         GenerateFloorTiles();
+        timer = BattleTimeManager.instance;
         timer.OnTimerEnd += EndTurn;
     }
 

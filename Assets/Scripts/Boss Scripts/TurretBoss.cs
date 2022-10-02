@@ -57,7 +57,7 @@ public class TurretBoss : MonoBehaviour {
             //highlight the hexagons in a line -- get this from the attack pattern
             float x0 = turret.position.x;
             float z0 = turret.position.z;
-            Quaternion qf = Quaternion.LookRotation(lookTarget, Vector3.up);
+            Quaternion qf = Quaternion.LookRotation(lookTarget.normalized, Vector3.up);
 
             //first we will get a vector of attack locations, the HashSet ensures they're unique (10/10 lazyness)
             attackLocations.Clear();
