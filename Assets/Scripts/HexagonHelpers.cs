@@ -79,6 +79,9 @@ public class HexagonHelpers : MonoBehaviour
     {
         List<Vector2Int> path = new List<Vector2Int>();
 
+        if (start == goal || !IsWalkable(GetFloorType(map, goal)))
+            return path;
+
         Queue<Vector2Int> frontier = new Queue<Vector2Int>();
         frontier.Enqueue(start);
         Dictionary<Vector2Int, Vector2Int> came_from = new Dictionary<Vector2Int, Vector2Int>();
