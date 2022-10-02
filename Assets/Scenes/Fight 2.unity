@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -784,6 +784,7 @@ GameObject:
   m_Component:
   - component: {fileID: 988278365}
   - component: {fileID: 988278366}
+  - component: {fileID: 988278367}
   m_Layer: 0
   m_Name: Scene Manager
   m_TagString: Untagged
@@ -825,7 +826,19 @@ MonoBehaviour:
   pathOutline: {fileID: 3693305612158679851, guid: c78a156e86894a54eb0e43acde78fc05, type: 3}
   playerPrefab: {fileID: 1520096450731234602, guid: 1f9453aa98747644ea1c6f734b506d31, type: 3}
   huntingBoss: {fileID: 2817903480033642145, guid: f3706da7aa27a4949b397756a798e93e, type: 3}
-  timer: {fileID: 1408263377}
+  timer: {fileID: 0}
+--- !u!114 &988278367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 988278363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71b7bd59205bb2d45b6b3abfd8492fc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &996473443
 GameObject:
   m_ObjectHideFlags: 0

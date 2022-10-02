@@ -22,7 +22,7 @@ public class TrapBossSceneGen : MonoBehaviour
 
     public GameObject huntingBoss;
 
-    public UI_TimerPanel timer;
+    public BattleTimeManager timer;
 
     private PlayerManager playerManager;
     private GameObject player;
@@ -55,7 +55,7 @@ public class TrapBossSceneGen : MonoBehaviour
         if (!playerManager.isMoving)
         {
             //do nothing if we are mousing over the UI or it's not the player's turn
-            if (!EventSystem.current.IsPointerOverGameObject() && timer.PlayerCanAct()) {
+            if (!EventSystem.current.IsPointerOverGameObject() && timer.PlayerActing()) {
                 ClearPath();
                 ShowPath();
             }
