@@ -8,12 +8,6 @@ public class HexagonHelpers : MonoBehaviour
     /// <summary>
     /// Given a tile index, returns all neighboring tile indices
     /// </summary>
-    /// <param name="hex">the current tile indices</param>
-    /// <param name="minX">mi</param>
-    /// <param name="maxX"></param>
-    /// <param name="minY"></param>
-    /// <param name="maxY"></param>
-    /// <returns></returns>
     public static List<Vector2Int> GetAllNeighbors(Vector2Int hex, int minX = 0, int maxX = int.MaxValue, int minY = 0, int maxY = int.MaxValue)
     {
         int xOffset = hex.y % 2 == 0 ? -1 : 0;
@@ -45,6 +39,9 @@ public class HexagonHelpers : MonoBehaviour
         return neighbors;
     }
 
+    /// <summary>
+    /// Given a tile index, returns all walkable neighboring tile indices
+    /// </summary>
     public static List<Vector2Int> GetWalkableNeighbors(int[,] map, Vector2Int hex, int minX = 0, int maxX = int.MaxValue, int minY = 0, int maxY = int.MaxValue)
     {
         List<Vector2Int> allNeighbors = GetAllNeighbors(hex, minX, maxX, minY, maxY);
@@ -78,10 +75,6 @@ public class HexagonHelpers : MonoBehaviour
 
     /// <summary>
     /// A* following https://www.redblobgames.com/pathfinding/a-star/introduction.html
-    /// </summary>
-    /// <param name="start"></param>
-    /// <param name="goal"></param>
-    /// <returns></returns>
     public static List<Vector2Int> FindPath(int[,] map, Vector2Int start, Vector2Int goal, int minX = 0, int maxX = int.MaxValue, int minY = 0, int maxY = int.MaxValue)
     {
         List<Vector2Int> path = new List<Vector2Int>();

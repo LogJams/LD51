@@ -53,7 +53,7 @@ public class FirstBossSceneGen : MonoBehaviour
         } else
         {
             MovePlayer();
-        }        
+        }
     }
 
     void ClearPath()
