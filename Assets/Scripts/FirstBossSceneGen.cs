@@ -149,21 +149,6 @@ public class FirstBossSceneGen : MonoBehaviour
         }
     }
 
-    List<Vector2Int> GetWalkableNeighbors(Vector2Int hex)
-    {
-        List<Vector2Int> allNeighbors = GetAllNeighbors(hex);
-        List<Vector2Int> neighbors = new List<Vector2Int>();
-
-        foreach (Vector2Int neighbor in allNeighbors)
-        {
-            if (IsWalkable(GetFloorType(TerrainTypeMap, neighbor)))
-                neighbors.Add(neighbor);
-
-        }
-
-        return neighbors;
-    }
-
     void VisualizeNeighbors()
     {
         // Show the potential path
@@ -174,7 +159,7 @@ public class FirstBossSceneGen : MonoBehaviour
         {
             Vector2Int tile = GetTileIndexFromObject(hit.transform);
 
-            foreach (Vector2Int neighbor in GetWalkableNeighbors(tile))
+            foreach (Vector2Int neighbor in GetWalkableNeighbors(TerrainTypeMap, tile, 0, numberTilesX-1, 0, numberTilesZ-1))
             {
                 GameObject newTile = Instantiate(pathOutline) as GameObject;
                 SetPosition(newTile, neighbor.x, 0, neighbor.y);
