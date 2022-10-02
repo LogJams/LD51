@@ -13,7 +13,8 @@ public class TerrainHelpers : MonoBehaviour
         path = 1,
         grass = 2,
         water = 3,
-        cliff = 4
+        cliff = 4,
+        boss = 10
     };
 
     public static bool IsWalkable(int floorType)

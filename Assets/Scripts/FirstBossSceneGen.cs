@@ -7,6 +7,8 @@ using UnityEngine;
 using static TerrainHelpers;
 using static HexagonHelpers;
 
+using UnityEngine.EventSystems;
+
 public class FirstBossSceneGen : MonoBehaviour
 {
     public GameObject dirtTile;
@@ -17,6 +19,10 @@ public class FirstBossSceneGen : MonoBehaviour
     public GameObject pathOutline;
 
     public GameObject playerPrefab;
+
+    public GameObject turretBoss;
+
+    public UI_TimerPanel timer;
 
     private GameObject player;
     private CharacterController controller;
@@ -41,20 +47,40 @@ public class FirstBossSceneGen : MonoBehaviour
         GenerateTileDictionary();
         GenerateFloorTiles();
         GeneratePlayer();
+        timer.OnTimerEnd += EndTurn;
     }
 
     // Update is called once per frame
     void Update()
     {
+
         if (!isMoving)
         {
-            ClearPath();
-            ShowPath();
+            //do nothing if we are mousing over the UI or it's not the player's turn
+            if (!EventSystem.current.IsPointerOverGameObject() && timer.PlayerCanAct()) {
+                ClearPath();
+                ShowPath();
+            }
         } else
         {
             MovePlayer();
         }
     }
+
+
+    public void EndTurn(System.Object src, EventArgs e) {
+        Vector2Int goalPos = currentpath[currentpath.Count - 1];
+        currentpath.Clear();
+
+        currentpath.Add(goalPos);
+
+        for (int i = _oldPathIndicators.Count-1; i >= 0; i--) {
+            Destroy(_oldPathIndicators[i]);
+        }
+        _oldPathIndicators.Clear();
+
+    } 
+
 
     void ClearPath()
     {
@@ -74,20 +100,52 @@ public class FirstBossSceneGen : MonoBehaviour
         };
     }
 
-    void GenerateFloorTiles()
-    {
-        for (int j = 0; j < numberTilesZ; j++)
-        {
-            for (int i = 0; i < numberTilesX; i++)
-            {
+    void GenerateFloorTiles() {
+
+        //boundary of CLIFFS
+        for (int i = 0; i < numberTilesX; i++) {
+            TerrainTypeMap[i, 0] = (int)TerrainTypes.cliff;
+            TerrainTypeMap[i, numberTilesZ-1] = (int)TerrainTypes.cliff;
+        }
+        for (int j = 0; j < numberTilesZ; j++) {
+            TerrainTypeMap[0, j] = (int)TerrainTypes.cliff;
+            TerrainTypeMap[numberTilesX - 1, j] = (int)TerrainTypes.cliff;
+        }
+
+        int bossX = numberTilesX / 2;
+        int bossZ = numberTilesZ - 4;
+
+
+        //fill in the inside
+        for (int j = 1; j < numberTilesZ-1; j++) {
+            for (int i = 1; i < numberTilesX-1; i++) {
                 // Draw a random tile
                 TerrainTypeMap[i, j] = GetRandomFloorType();
+            }
+        }
 
+
+
+        //generate the final tilemap
+        for (int j = 0; j < numberTilesZ; j++) {
+            for (int i = 0; i < numberTilesX; i++) {
                 // Instantiate it
                 GameObject newTile = Instantiate(TileMapper[(TerrainTypes)TerrainTypeMap[i,j]]) as GameObject;
                 SetPosition(newTile, i, 0, j);
             }
         }
+
+
+        GameObject boss = Instantiate(turretBoss);
+        SetPosition(boss, bossX, 0, bossZ);
+
+        List<Vector2Int> nbhd = GetAllNeighbors(new Vector2Int(bossX, bossZ));
+
+        TerrainTypeMap[bossX, bossZ] = (int)TerrainTypes.boss;
+        foreach (var pos in nbhd) {
+            TerrainTypeMap[pos.x, pos.y] = (int)TerrainTypes.boss;
+        }
+
     }
 
     private void SetPosition(GameObject obj, int indxX, int y, int indxZ)
@@ -103,10 +161,8 @@ public class FirstBossSceneGen : MonoBehaviour
         if (UnityEngine.Random.Range(0, 10) < 3)
             return (int)TerrainTypes.grass;
 
-        if (UnityEngine.Random.Range(0, 10) < 8)
-            return (int)TerrainTypes.path;
-
-        return (int)TerrainTypes.water;
+        
+        return (int)TerrainTypes.path;
     }
 
     void GeneratePlayer()
@@ -131,7 +187,7 @@ public class FirstBossSceneGen : MonoBehaviour
 
             List<Vector2Int> path = FindPath(TerrainTypeMap, start, goal, 0, numberTilesX-1, 0, numberTilesZ-1);
 
-            Debug.Log(path.Count);
+            //Debug.Log(path.Count);
             foreach (Vector2Int wayPoint in path)
             {
                 GameObject newTile = Instantiate(pathOutline) as GameObject;
@@ -143,7 +199,7 @@ public class FirstBossSceneGen : MonoBehaviour
             currentpath = path;
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             if (currentpath.Count > 0)
                 isMoving = true;
