@@ -14,16 +14,30 @@ public class PlayerManager : MonoBehaviour
     private float movingSpeed = 3.0f;
 
     private CharacterController controller;
+    Vector3 movement;
+    float verticalSpeed = 0;
 
     public void Awake()
     {
         controller = player.GetComponent<CharacterController>();
     }
 
+    public void Update() {
+        verticalSpeed += Physics.gravity.y * Time.deltaTime;
+        if (controller.isGrounded) {
+            verticalSpeed = 0;
+        }
+        if (!isMoving) {
+            movement = Vector3.zero;
+        }
+        controller.Move( (movement + new Vector3(0, verticalSpeed, 0) ) * Time.deltaTime);
+    }
+
     public void MovePlayer(List<Vector2Int> currentpath, List<GameObject> pathIndicators)
     {
-        if (!isMoving)
+        if (!isMoving) {
             return;
+        }
 
         if (currentpath.Count > 0)
         {
@@ -49,7 +63,7 @@ public class PlayerManager : MonoBehaviour
             }
             else
             {
-                controller.Move((tilePosition - projectedPlayerPosition).normalized * Time.deltaTime * movingSpeed);
+                movement = (tilePosition - projectedPlayerPosition).normalized * movingSpeed;
             }
         } else
         {
