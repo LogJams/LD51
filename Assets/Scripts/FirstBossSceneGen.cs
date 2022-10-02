@@ -72,10 +72,10 @@ public class FirstBossSceneGen : MonoBehaviour
 
         currentpath.Add(goalPos);
 
-        for (int i = _oldPathIndicators.Count-1; i >= 0; i--) {
-            Destroy(_oldPathIndicators[i]);
+        for (int i = pathIndicators.Count-1; i >= 0; i--) {
+            Destroy(pathIndicators[i]);
         }
-        _oldPathIndicators.Clear();
+        pathIndicators.Clear();
 
     } 
 
@@ -132,7 +132,6 @@ public class FirstBossSceneGen : MonoBehaviour
                 SetPosition(newTile, i, 0, j);
             }
         }
-
 
         GameObject boss = Instantiate(turretBoss);
         SetPosition(boss, bossX, 0, bossZ);
