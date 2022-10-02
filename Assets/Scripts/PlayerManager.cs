@@ -17,6 +17,8 @@ public class PlayerManager : MonoBehaviour
     Vector3 movement;
     float verticalSpeed = 0;
 
+    public Vector3 currentTilePositon = new Vector3();
+
     public void Awake()
     {
         controller = player.GetComponent<CharacterController>();
@@ -47,6 +49,9 @@ public class PlayerManager : MonoBehaviour
 
             if ((tilePosition - projectedPlayerPosition).magnitude < 0.1)
             {
+                // Keep track of the current tile position and the previous one
+                currentTilePositon = tilePosition;
+
                 // Remove the way point
                 currentpath.RemoveAt(currentpath.Count - 1);
 
