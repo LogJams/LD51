@@ -22,7 +22,7 @@ public class FirstBossSceneGen : MonoBehaviour
 
     public GameObject turretBoss;
 
-    public UI_TimerPanel timer;
+    private BattleTimeManager timer;
 
     private PlayerManager playerManager;
     private GameObject player;
@@ -44,6 +44,7 @@ public class FirstBossSceneGen : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        timer = BattleTimeManager.instance;
         GenerateTileDictionary();
         GenerateFloorTiles();
         timer.OnTimerEnd += EndTurn;
@@ -55,7 +56,7 @@ public class FirstBossSceneGen : MonoBehaviour
         if (!playerManager.isMoving)
         {
             //do nothing if we are mousing over the UI or it's not the player's turn
-            if (!EventSystem.current.IsPointerOverGameObject() && timer.PlayerCanAct()) {
+            if (!EventSystem.current.IsPointerOverGameObject() && timer.PlayerActing()) {
                 ClearPath();
                 ShowPath();
             }

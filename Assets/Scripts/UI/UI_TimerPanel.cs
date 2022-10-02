@@ -13,58 +13,39 @@ public class UI_TimerPanel : MonoBehaviour {
     public Slider slider;
     public TMPro.TextMeshProUGUI text;
 
-    public event EventHandler OnTimerEnd;
+    BattleTimeManager timer;
 
-    float time = 10f; //every 10 seconds!
-    
-    bool playerTurn = false;
+    public void Start() {
+        timer = BattleTimeManager.instance;
+        button.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "START";
 
-    public bool PlayerCanAct() {
-        return playerTurn;
-    }
-
-    public void Update() {
-
-        if (playerTurn) UpdateTimer();
-    
+        timer.OnTimerStart += StartOfRound;
+        timer.OnTimerEnd += EndOfRound;
 
     }
 
 
     public void OnButtonClick() {
-        if (!playerTurn) {
-            StartTurn();
-        }
-        else {
-            TimeOver();
-        }
+        timer.OnButtonClick();
     }
 
-    void StartTurn() {
-        time = 10f;
-        playerTurn = true;
-        button.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "END";
-    }
-
-
-    void UpdateTimer() {
-        time -= Time.deltaTime;
-
-        text.text = "0:0" + Mathf.RoundToInt(time);
-        slider.value = time / 10f;
-
-        if (time <= 0) {
-            text.text = "0:10";
-            slider.value = 1;
-            TimeOver();
-        }
-
-    }
-
-    void TimeOver() {
+    public void EndOfRound(System.Object src, EventArgs e) {
         button.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "START";
-        playerTurn = false;
-        OnTimerEnd?.Invoke(this, EventArgs.Empty);
+        button.interactable = true;
     }
+
+    public void StartOfRound(System.Object src, EventArgs e) {
+        button.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "WAIT";
+        button.interactable = false;
+    }
+
+
+    void Update() {
+        float time = timer.SecondsRemaining();
+        text.text = "0:0" + Mathf.RoundToInt(time);
+        slider.value = Mathf.Max(time / 10f, 0.000001f);
+    }
+
+
 
 }
