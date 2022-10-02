@@ -6,7 +6,7 @@ using System;
 using static TerrainHelpers;
 using static HexagonHelpers;
 
-public class PlayerManager
+public class PlayerManager : MonoBehaviour
 {
     public bool isMoving = false;
     private float movingSpeed = 3.0f;
@@ -33,9 +33,14 @@ public class PlayerManager
 
             if ((tilePosition - projectedPlayerPosition).magnitude < 0.1)
             {
+                // Remove the way point
                 currentpath.RemoveAt(currentpath.Count - 1);
-                pathIndicators.RemoveAt(currentpath.Count - 1);
 
+                // Remove the path indicator that was reached
+                Destroy(pathIndicators[pathIndicators.Count - 1]);
+                pathIndicators.RemoveAt(pathIndicators.Count - 1);
+
+                // If this was the last way-point we are done moving
                 if (currentpath.Count == 0)
                     isMoving = false;
             }
@@ -43,11 +48,9 @@ public class PlayerManager
             {
                 controller.Move((tilePosition - projectedPlayerPosition).normalized * Time.deltaTime * movingSpeed);
             }
-        }
-        else
+        } else
         {
-            // Shouldn't enter this, but let's make sure 
-            throw new Exception("Why are we entering this code?");
+            isMoving = false;
         }
     }
 }
