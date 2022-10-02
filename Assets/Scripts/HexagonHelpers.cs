@@ -123,4 +123,13 @@ public class HexagonHelpers : MonoBehaviour
 
         return path;
     }
+
+    public static void SetPosition(GameObject obj, int indxX, int y, int indxZ)
+    {
+        float iVal = indxX;
+        if (indxZ % 2 == 1)
+            iVal += 0.5f;
+        obj.transform.position = new Vector3(iVal, y, indxZ * Mathf.Sqrt(3) / 2);
+    }
+
 }
