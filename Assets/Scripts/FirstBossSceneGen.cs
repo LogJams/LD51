@@ -158,7 +158,6 @@ public class FirstBossSceneGen : MonoBehaviour
     {
         player = Instantiate(playerPrefab) as GameObject;
         player.transform.position = new Vector3(SCENE_WIDTH/2.0f, 2, SCENE_HEIGHT*Mathf.Sqrt(3)/4);
-        controller = player.GetComponent<CharacterController>();
         playerManager = new PlayerManager(player); 
     }
 
