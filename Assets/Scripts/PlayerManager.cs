@@ -37,8 +37,11 @@ public class PlayerManager : MonoBehaviour
                 currentpath.RemoveAt(currentpath.Count - 1);
 
                 // Remove the path indicator that was reached
-                Destroy(pathIndicators[pathIndicators.Count - 1]);
-                pathIndicators.RemoveAt(pathIndicators.Count - 1);
+                if (pathIndicators.Count > 0)
+                {
+                    Destroy(pathIndicators[pathIndicators.Count - 1]);
+                    pathIndicators.RemoveAt(pathIndicators.Count - 1);
+                }
 
                 // If this was the last way-point we are done moving
                 if (currentpath.Count == 0)
