@@ -13,6 +13,7 @@ public class FirstBossSceneGen : MonoBehaviour
     public GameObject dirtTile;
     public GameObject waterTile;
     public GameObject grassTile;
+    public GameObject cliffTile;
 
     public GameObject pathOutline;
 
@@ -69,7 +70,8 @@ public class FirstBossSceneGen : MonoBehaviour
         TileMapper = new Dictionary<TerrainTypes, GameObject>() {
             { TerrainTypes.path, dirtTile},
             { TerrainTypes.grass, grassTile},
-            { TerrainTypes.water, waterTile}
+            { TerrainTypes.water, waterTile},
+            { TerrainTypes.cliff, cliffTile}
         };
     }
 
@@ -182,7 +184,7 @@ public class FirstBossSceneGen : MonoBehaviour
                 }
             }
 
-            foreach (Vector2Int neighbor in GetAllNeighbors(current))
+            foreach (Vector2Int neighbor in GetWalkableNeighbors(current))
             {
                 // Assuming one unit cost per neighbor
                 float new_cost = cost_so_far[current] + 1;
