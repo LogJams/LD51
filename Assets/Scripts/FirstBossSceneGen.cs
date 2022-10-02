@@ -140,8 +140,6 @@ public class FirstBossSceneGen : MonoBehaviour
         GameObject boss = Instantiate(turretBoss);
         SetPosition(boss, bossX, 0, bossZ);
 
-        boss.GetComponent<TurretBoss>().playerTransform = player.transform;
-
         List<Vector2Int> nbhd = GetAllNeighbors(new Vector2Int(bossX, bossZ));
 
         TerrainTypeMap[bossX, bossZ] = (int)TerrainTypes.boss;
