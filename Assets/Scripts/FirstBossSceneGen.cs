@@ -26,18 +26,16 @@ public class FirstBossSceneGen : MonoBehaviour
 
     private PlayerManager playerManager;
     private GameObject player;
-    private CharacterController controller;
 
-    private List<Vector2Int> currentpath;
-
-    private static int numberTilesX = 20;
-    private static int numberTilesZ = 20;
+    private static int SCENE_WIDTH = 20;
+    private static int SCENE_HEIGHT = 20;
 
     private List<GameObject> pathIndicators = new List<GameObject>();
+    private List<Vector2Int> currentpath;
 
     private Dictionary<TerrainTypes, GameObject> TileMapper;
 
-    private int[,] TerrainTypeMap = new int[numberTilesX,numberTilesZ];
+    private int[,] TerrainTypeMap = new int[SCENE_WIDTH,SCENE_HEIGHT];
 
     private void Awake() {
         GeneratePlayer();
@@ -103,22 +101,22 @@ public class FirstBossSceneGen : MonoBehaviour
     void GenerateFloorTiles() {
 
         //boundary of CLIFFS
-        for (int i = 0; i < numberTilesX; i++) {
+        for (int i = 0; i < SCENE_WIDTH; i++) {
             TerrainTypeMap[i, 0] = (int)TerrainTypes.cliff;
-            TerrainTypeMap[i, numberTilesZ-1] = (int)TerrainTypes.cliff;
+            TerrainTypeMap[i, SCENE_HEIGHT-1] = (int)TerrainTypes.cliff;
         }
-        for (int j = 0; j < numberTilesZ; j++) {
+        for (int j = 0; j < SCENE_HEIGHT; j++) {
             TerrainTypeMap[0, j] = (int)TerrainTypes.cliff;
-            TerrainTypeMap[numberTilesX - 1, j] = (int)TerrainTypes.cliff;
+            TerrainTypeMap[SCENE_WIDTH - 1, j] = (int)TerrainTypes.cliff;
         }
 
-        int bossX = numberTilesX / 2;
-        int bossZ = numberTilesZ - 4;
+        int bossX = SCENE_WIDTH / 2;
+        int bossZ = SCENE_HEIGHT - 4;
 
 
         //fill in the inside
-        for (int j = 1; j < numberTilesZ-1; j++) {
-            for (int i = 1; i < numberTilesX-1; i++) {
+        for (int j = 1; j < SCENE_HEIGHT-1; j++) {
+            for (int i = 1; i < SCENE_WIDTH-1; i++) {
                 // Draw a random tile
                 TerrainTypeMap[i, j] = GetRandomFloorType();
             }
@@ -127,8 +125,8 @@ public class FirstBossSceneGen : MonoBehaviour
 
 
         //generate the final tilemap
-        for (int j = 0; j < numberTilesZ; j++) {
-            for (int i = 0; i < numberTilesX; i++) {
+        for (int j = 0; j < SCENE_HEIGHT; j++) {
+            for (int i = 0; i < SCENE_WIDTH; i++) {
                 // Instantiate it
                 GameObject newTile = Instantiate(TileMapper[(TerrainTypes)TerrainTypeMap[i,j]]) as GameObject;
                 SetPosition(newTile, i, 0, j);
@@ -159,7 +157,7 @@ public class FirstBossSceneGen : MonoBehaviour
     void GeneratePlayer()
     {
         player = Instantiate(playerPrefab) as GameObject;
-        player.transform.position = new Vector3(numberTilesX/2.0f, 2, numberTilesZ*Mathf.Sqrt(3)/4);
+        player.transform.position = new Vector3(SCENE_WIDTH/2.0f, 2, SCENE_HEIGHT*Mathf.Sqrt(3)/4);
         controller = player.GetComponent<CharacterController>();
         playerManager = new PlayerManager(player); 
     }
@@ -177,7 +175,7 @@ public class FirstBossSceneGen : MonoBehaviour
             Vector2Int start = GetTileIndexFromObject(player.transform);
             Vector2Int goal = GetTileIndexFromObject(hit.transform);
 
-            List<Vector2Int> path = FindPath(TerrainTypeMap, start, goal, 0, numberTilesX-1, 0, numberTilesZ-1);
+            List<Vector2Int> path = FindPath(TerrainTypeMap, start, goal, 0, SCENE_WIDTH-1, 0, SCENE_HEIGHT-1);
 
             //Debug.Log(path.Count);
             foreach (Vector2Int wayPoint in path)
@@ -208,7 +206,7 @@ public class FirstBossSceneGen : MonoBehaviour
         {
             Vector2Int tile = GetTileIndexFromObject(hit.transform);
 
-            foreach (Vector2Int neighbor in GetWalkableNeighbors(TerrainTypeMap, tile, 0, numberTilesX-1, 0, numberTilesZ-1))
+            foreach (Vector2Int neighbor in GetWalkableNeighbors(TerrainTypeMap, tile, 0, SCENE_WIDTH-1, 0, SCENE_HEIGHT-1))
             {
                 GameObject newTile = Instantiate(pathOutline) as GameObject;
                 SetPosition(newTile, neighbor.x, 0, neighbor.y);
