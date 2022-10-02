@@ -28,7 +28,7 @@ public class TerrainHelpers : MonoBehaviour
         {
             return map[x, y];
         }
-        catch (Exception ex)
+        catch 
         {
             return (int)TerrainTypes.undefined;
         }
