@@ -29,7 +29,6 @@ public class TerrainHelpers : MonoBehaviour
         }
         catch (Exception ex)
         {
-            Debug.Log(ex.Message);
             return (int)TerrainTypes.undefined;
         }
     }
