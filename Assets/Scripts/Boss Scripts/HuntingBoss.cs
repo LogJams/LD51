@@ -6,7 +6,7 @@ using System;
 
 using static HexagonHelpers;
 
-public class HuntingBoss : MonoBehaviour {
+public class HuntingBoss : MonoBehaviour, Enemy {
 
     public Transform hunter;
     public GameObject tileOutline;
@@ -36,6 +36,12 @@ public class HuntingBoss : MonoBehaviour {
 
     public void OnRoundEnd(System.Object src, EventArgs e) {
         StopAllCoroutines();
+    }
+
+    public bool OnPitfallTrap()
+    {
+        StartCoroutine(FallCoroutine());
+        return true;
     }
 
     public IEnumerator AttackCoroutine() {
@@ -96,6 +102,25 @@ public class HuntingBoss : MonoBehaviour {
         while (elapsed < duration) {
             elapsed += Time.deltaTime;
             hunter.rotation = Quaternion.Lerp(q0, qf, elapsed / duration);
+            yield return new WaitForEndOfFrame();
+        }
+
+        hunter.rotation = qf;
+
+        yield return null;
+    }
+
+    public IEnumerator FallCoroutine()
+    {
+        float fallDirection = 0.5f;
+        Quaternion q0 = hunter.rotation;
+        Quaternion qf = Quaternion.LookRotation(-Vector3.up, hunter.transform.forward);
+        float elapsed = 0;
+
+        while (elapsed < fallDirection)
+        {
+            elapsed += Time.deltaTime;
+            hunter.rotation = Quaternion.Lerp(q0, qf, elapsed / fallDirection);
             yield return new WaitForEndOfFrame();
         }
 
