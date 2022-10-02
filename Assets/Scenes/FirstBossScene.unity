@@ -262,8 +262,11 @@ MonoBehaviour:
   dirtTile: {fileID: 3693305612158679851, guid: 2e8d701f3d61ee04b9e91751eb051418, type: 3}
   waterTile: {fileID: 3693305612158679851, guid: 6d03ae1846bc09e40b62b10dac9a5708, type: 3}
   grassTile: {fileID: 3693305612158679851, guid: ce1d406a6782aed42afa942c7c0f1fd2, type: 3}
+  cliffTile: {fileID: 3693305612158679851, guid: 07cc97ad5f20bcf469bd3aba5763e559, type: 3}
   pathOutline: {fileID: 3693305612158679851, guid: c78a156e86894a54eb0e43acde78fc05, type: 3}
   playerPrefab: {fileID: 1520096450731234602, guid: 1f9453aa98747644ea1c6f734b506d31, type: 3}
+  turretBoss: {fileID: 4147607205445219921, guid: 54651eaec05b4774b91708ef7c36fd20, type: 3}
+  timer: {fileID: 0}
 --- !u!4 &977382330
 Transform:
   m_ObjectHideFlags: 0
@@ -363,34 +366,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!1 &1959273159
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1959273160}
-  m_Layer: 0
-  m_Name: PathIndicator
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1959273160
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1959273159}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.4921012, y: 3.2385702, z: 5.1953316}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
