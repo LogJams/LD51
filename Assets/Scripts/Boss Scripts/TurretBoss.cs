@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using System;
+
 using static HexagonHelpers;
 
 public class TurretBoss : MonoBehaviour {
@@ -11,8 +13,6 @@ public class TurretBoss : MonoBehaviour {
 
     Transform playerTransform;
 
-
-    bool actionPhase = false; //when true, the turret should be attacking
 
     public List<ParticleSystem> fireParticles;
     public List<ParticleSystem> smokeParticles;
@@ -27,18 +27,19 @@ public class TurretBoss : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        BattleTimeManager.instance.OnTimerStart += OnRoundStart;
+        BattleTimeManager.instance.OnTimerStart += OnRoundEnd;
+    }
 
-        actionPhase = true;
+    public void OnRoundStart(System.Object src, EventArgs e) {
         StartCoroutine(AttackCoroutine());
+    }
+
+    public void OnRoundEnd(System.Object src, EventArgs e) {
 
     }
 
-    // Update is called once per frame
-    void Update() {
-
-    }
-
-    
+   
 
     public IEnumerator AttackCoroutine() {
         //todo: pick a random attack pattern (or cycle through them)
@@ -46,9 +47,10 @@ public class TurretBoss : MonoBehaviour {
         float rotationTime = 1.0f;
         float attackTime = 3.0f;
 
-        while (actionPhase) {
+        //we call StopAllCoroutines at the end of the round
+        while (BattleTimeManager.instance.PlayerActing()) {
             //pick a straight line + look at the player & random offset
-            Vector3 lookTarget = playerTransform.position + new Vector3(Random.Range(-2f, 2f), 0, Random.Range(-2f, 2f)) - turret.transform.position;
+            Vector3 lookTarget = playerTransform.position + new Vector3(UnityEngine.Random.Range(-2f, 2f), 0, UnityEngine.Random.Range(-2f, 2f)) - turret.transform.position;
             lookTarget.y = 0;
             StartCoroutine(LookCoroutine(lookTarget, rotationTime));
 
@@ -104,7 +106,6 @@ public class TurretBoss : MonoBehaviour {
 
             yield return new WaitForEndOfFrame();
         }
-
         yield return null;
     }
 
