@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-
+using static TerrainHelpers;
 
 //spawn is where you start, boss is the location of the bosses, enemy is enemies+treasure, and friendly is friends
 public enum ZONE_TYPES {
@@ -15,7 +14,6 @@ public class Zone {
     public int degree;
     public List<GameObject> decorations;
 }
-
 
 public class OverworldManager : MonoBehaviour {
     //parameters for hexagon geometry
@@ -37,7 +35,7 @@ public class OverworldManager : MonoBehaviour {
     List<Zone> areas;
 
     //store the map and metadata about terrain generation here
-    int[,] map;
+    int[,] TerrainTypeMap;
     int[,] connectivity;
 
     GameObject[,] chunks;
@@ -47,9 +45,7 @@ public class OverworldManager : MonoBehaviour {
     void Awake() {
         Generate();
         player = GameObject.FindGameObjectWithTag("Player");
-
     }
-
 
     private void Update() {
         //only enable chunks near the player
@@ -66,8 +62,6 @@ public class OverworldManager : MonoBehaviour {
         }
     }
 
-
-
     void Cleanup() {
 
         //destroy all children (hexagons)
@@ -75,11 +69,11 @@ public class OverworldManager : MonoBehaviour {
             DestroyImmediate(transform.GetChild(0).gameObject);
         }
 
-        //create map and initialize to -1 (undefined)
-        map = new int[WORLD_WIDTH, WORLD_HEIGHT];
+        //create TerrainTypeMap and initialize to -1 (undefined)
+        TerrainTypeMap = new int[WORLD_WIDTH, WORLD_HEIGHT];
         for (int i = 0; i < WORLD_WIDTH; i++) {
             for (int j = 0; j < WORLD_HEIGHT; j++) {
-                map[i, j] = -1;
+                TerrainTypeMap[i, j] = (int)TerrainHelpers.TerrainTypes.undefined;
             }
         }
 
@@ -247,7 +241,7 @@ public class OverworldManager : MonoBehaviour {
             zoneDecorator.DecorateZone(areas[i]);
         }
 
-        //set connections in the map data
+        //set connections in the TerrainTypeMap data
         for (int i = 0; i < areas.Count; i++) {
             for (int j = i + 1; j < areas.Count; j++) {
                 if (connectivity[i, j] == 0) continue;
@@ -268,14 +262,14 @@ public class OverworldManager : MonoBehaviour {
                         int xi = x0 + x;
                         int yi = y0 + Mathf.RoundToInt(((float)dy / dx) * x);
                         //set this and adjacent paths to dirt
-                        map[xi, yi] = map[xi, yi - 1] = map[xi, yi + 1] = Random.value > 0.7f ? 1 : 2;
+                        TerrainTypeMap[xi, yi] = TerrainTypeMap[xi, yi - 1] = TerrainTypeMap[xi, yi + 1] = Random.value > 0.7f ? (int)TerrainTypes.path : (int)TerrainTypes.grass;
                     }
                 } else {
                     for (int y = 0; y != dy; y += (int)Mathf.Sign(dy)) {
                         int yi = y0 + y;
                         int xi = x0 + Mathf.RoundToInt(((float)dx / dy) * y);
                         //set this and adjacent paths to dirt
-                        map[xi, yi] = map[xi - 1, yi] = map[xi + 1, yi] = Random.value > 0.7f ? 1 : 2;
+                        TerrainTypeMap[xi, yi] = TerrainTypeMap[xi - 1, yi] = TerrainTypeMap[xi + 1, yi] = Random.value > 0.7f ? (int)TerrainTypes.path : (int)TerrainTypes.grass;
                     }
                 }
             }
@@ -285,25 +279,25 @@ public class OverworldManager : MonoBehaviour {
         foreach (var zone in areas) {
             for (int i = 0; i < zone.w; i++) {
                 for (int j = 0; j < zone.h; j++) {
-                    map[i + zone.x, j + zone.y] = Random.value > 0.4f ? 1 : 2;
+                    TerrainTypeMap[i + zone.x, j + zone.y] = Random.value > 0.4f ? (int)TerrainTypes.path : (int)TerrainTypes.grass;
                 }
             }
         }
 
 
-        //generate a border around the entire map
+        //generate a border around the entire TerrainTypeMap
         for (int i = 0; i < WORLD_WIDTH; i++) {
-            map[i, 0] = map[i, WORLD_WIDTH - 1] = 4; //4 is cliff
+            TerrainTypeMap[i, 0] = TerrainTypeMap[i, WORLD_WIDTH - 1] = (int)TerrainTypes.cliff;
         }
         for (int j = 0; j < WORLD_HEIGHT; j++) {
-            map[0, j] = map[WORLD_WIDTH - 1, j] = 4; //4 is cliff
+            TerrainTypeMap[0, j] = TerrainTypeMap[WORLD_WIDTH - 1, j] = (int)TerrainTypes.cliff;
         }
 
         //generate remaining tiles
         for (int i = 1; i < WORLD_WIDTH - 1; i++) {
             for (int j = 1; j < WORLD_HEIGHT - 1; j++) {
-                if (map[i, j] == -1) {
-                    map[i, j] = 4; // Random.Range(1, terrainHexes.Count);
+                if (TerrainTypeMap[i, j] == (int)TerrainTypes.undefined) {
+                    TerrainTypeMap[i, j] = (int)TerrainTypes.cliff;
                 }
             }
         }
@@ -396,15 +390,10 @@ public class OverworldManager : MonoBehaviour {
                 int cx = (int) (i / CHUNK_SIZE);
                 int cy = (int) (j / CHUNK_SIZE);
 
-                Instantiate(terrainHexes[map[i, j]], pos, Quaternion.identity, chunks[cx,cy].transform);
+                Instantiate(terrainHexes[TerrainTypeMap[i, j]], pos, Quaternion.identity, chunks[cx,cy].transform);
 
             }
         }
     }
-
-
-
-
-
 
 }

@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdeaa0bd94ef48b449f4a35d424629d3, type: 3}
   m_Name: Thunderstruck
   m_EditorClassIdentifier: 
+  unlocked: 0

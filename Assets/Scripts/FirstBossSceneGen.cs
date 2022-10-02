@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using static TerrainHelpers;
+using static HexagonHelpers;
 
 public class FirstBossSceneGen : MonoBehaviour
 {
@@ -29,17 +31,9 @@ public class FirstBossSceneGen : MonoBehaviour
 
     private List<GameObject> _oldPathIndicators = new List<GameObject>();
 
-    private enum FloorTypeNames
-    {
-        dirt = 0,
-        grass,
-        water,
-        none = 100
-    };
+    private Dictionary<TerrainTypes, GameObject> TileMapper;
 
-    private Dictionary<FloorTypeNames, GameObject> TileMapper;
-
-    private int[,] FloorTypes = new int[numberTilesX,numberTilesZ];
+    private int[,] TerrainTypeMap = new int[numberTilesX,numberTilesZ];
 
     // Start is called before the first frame update
     void Start()
@@ -47,8 +41,6 @@ public class FirstBossSceneGen : MonoBehaviour
         GenerateTileDictionary();
         GenerateFloorTiles();
         GeneratePlayer();
-
-        controller = player.AddComponent<CharacterController>();
     }
 
     // Update is called once per frame
@@ -74,10 +66,10 @@ public class FirstBossSceneGen : MonoBehaviour
 
     void GenerateTileDictionary()
     {
-        TileMapper = new Dictionary<FloorTypeNames, GameObject>() {
-            { FloorTypeNames.dirt, dirtTile},
-            { FloorTypeNames.grass, grassTile},
-            { FloorTypeNames.water, waterTile}
+        TileMapper = new Dictionary<TerrainTypes, GameObject>() {
+            { TerrainTypes.path, dirtTile},
+            { TerrainTypes.grass, grassTile},
+            { TerrainTypes.water, waterTile}
         };
     }
 
@@ -88,10 +80,10 @@ public class FirstBossSceneGen : MonoBehaviour
             for (int i = 0; i < numberTilesX; i++)
             {
                 // Draw a random tile
-                FloorTypes[i, j] = GetRandomFloorType();
+                TerrainTypeMap[i, j] = GetRandomFloorType();
 
                 // Instantiate it
-                GameObject newTile = Instantiate(TileMapper[(FloorTypeNames)FloorTypes[i,j]]) as GameObject;
+                GameObject newTile = Instantiate(TileMapper[(TerrainTypes)TerrainTypeMap[i,j]]) as GameObject;
                 SetPosition(newTile, i, 0, j);
             }
         }
@@ -108,18 +100,19 @@ public class FirstBossSceneGen : MonoBehaviour
     private int GetRandomFloorType()
     {
         if (UnityEngine.Random.Range(0, 10) < 3)
-            return 0;
+            return (int)TerrainTypes.grass;
 
         if (UnityEngine.Random.Range(0, 10) < 8)
-            return 1;
+            return (int)TerrainTypes.path;
 
-        return 2;
+        return (int)TerrainTypes.water;
     }
 
     void GeneratePlayer()
     {
         player = Instantiate(playerPrefab) as GameObject;
         player.transform.position = new Vector3(numberTilesX/2.0f, 2, numberTilesZ*Mathf.Sqrt(3)/4);
+        controller = player.GetComponent<CharacterController>();
     }
 
     void ShowPath()
@@ -189,7 +182,7 @@ public class FirstBossSceneGen : MonoBehaviour
                 }
             }
 
-            foreach (Vector2Int neighbor in GetNeighbors(current))
+            foreach (Vector2Int neighbor in GetAllNeighbors(current))
             {
                 // Assuming one unit cost per neighbor
                 float new_cost = cost_so_far[current] + 1;
@@ -208,66 +201,21 @@ public class FirstBossSceneGen : MonoBehaviour
         return path;
     }
 
-    int GetFloorType(int x, int y)
+    List<Vector2Int> GetWalkableNeighbors(Vector2Int hex)
     {
-        try
-        {
-            return FloorTypes[x, y];
-        } catch (Exception ex)
-        {
-            Debug.Log(ex.Message);
-            return (int)FloorTypeNames.none;
-        }
-    }
-
-    List<Vector2Int> GetNeighbors(Vector2Int hex)
-    {
-        int xOffset = hex.y % 2 == 0 ? -1 : 0;
-
+        List<Vector2Int> allNeighbors = GetAllNeighbors(hex);
         List<Vector2Int> neighbors = new List<Vector2Int>();
-        if (hex.x > 0)
+
+        foreach (Vector2Int neighbor in allNeighbors)
         {
-            if (IsWalkable(GetFloorType(hex.x-1, hex.y)))
-                neighbors.Add(new Vector2Int(hex.x - 1, hex.y));
-        }
+            if (IsWalkable(GetFloorType(TerrainTypeMap, neighbor)))
+                neighbors.Add(neighbor);
 
-        if (hex.x < numberTilesX - 1)
-        {
-            if (IsWalkable(GetFloorType(hex.x + 1, hex.y)))
-                neighbors.Add(new Vector2Int(hex.x + 1, hex.y));
-        }
-
-        if (hex.y > 0)
-        {
-            if (IsWalkable(GetFloorType(hex.x + xOffset, hex.y - 1)))
-                neighbors.Add(new Vector2Int(hex.x + xOffset, hex.y - 1));
-
-            if (hex.x < numberTilesX - 1)
-            {
-                if (IsWalkable(GetFloorType(hex.x + 1 + xOffset, hex.y - 1)))
-                    neighbors.Add(new Vector2Int(hex.x + 1 + xOffset, hex.y - 1));
-            }
-        }
-
-        if (hex.y < numberTilesZ - 1)
-        {
-            if (IsWalkable(GetFloorType(hex.x + xOffset, hex.y + 1)))
-                neighbors.Add(new Vector2Int(hex.x + xOffset, hex.y + 1));
-
-            if (hex.x < numberTilesX - 1)
-            {
-                if (IsWalkable(GetFloorType(hex.x + 1 + xOffset, hex.y + 1)))
-                    neighbors.Add(new Vector2Int(hex.x + 1 + xOffset, hex.y + 1));
-            }
         }
 
         return neighbors;
     }
 
-    bool IsWalkable(int floorType)
-    {
-        return floorType < 2;
-    }
 
     Vector2Int GetTileIndexFromObject(Transform tile)
     {
@@ -287,7 +235,6 @@ public class FirstBossSceneGen : MonoBehaviour
 
     void VisualizeNeighbors()
     {
-
         // Show the potential path
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
@@ -296,7 +243,7 @@ public class FirstBossSceneGen : MonoBehaviour
         {
             Vector2Int tile = GetTileIndexFromObject(hit.transform);
 
-            foreach (Vector2Int neighbor in GetNeighbors(tile))
+            foreach (Vector2Int neighbor in GetWalkableNeighbors(tile))
             {
                 GameObject newTile = Instantiate(pathOutline) as GameObject;
                 SetPosition(newTile, neighbor.x, 0, neighbor.y);
