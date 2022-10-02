@@ -19,6 +19,13 @@ public class HuntingBoss : MonoBehaviour, Enemy {
     HashSet<Vector2Int> attackLocations;
     List<GameObject> tileOutlines;
 
+    //used for falling
+    bool falling = false;
+    float elapsed;
+    Quaternion q0; //saved initial rotation
+    Quaternion qf; //rotation on the ground
+
+
     private void Awake() {
         tileOutlines = new List<GameObject>();
         attackLocations = new HashSet<Vector2Int>();
@@ -40,8 +47,51 @@ public class HuntingBoss : MonoBehaviour, Enemy {
 
     public bool OnPitfallTrap()
     {
-        StartCoroutine(FallCoroutine());
+        //we wil set the falling flag to true and kill all coroutines
+        falling = true;
+        elapsed = 0;
+        q0 = hunter.rotation;
+        qf = Quaternion.LookRotation(-Vector3.up, hunter.transform.forward);
+        StopAllCoroutines();
         return true;
+    }
+
+
+
+
+    void Update() {
+        if (!falling) return; //the update method handles falling and getting back up
+
+        float fallTime = 0.5f;
+        float downTime = 2.0f;
+        float riseTime = 0.5f;
+
+        if (elapsed < fallTime) {
+            elapsed += Time.deltaTime;
+            hunter.rotation = Quaternion.Lerp(q0, qf, elapsed / fallTime);
+        }
+        else if (elapsed < fallTime + downTime) {
+            hunter.rotation = qf;
+            //hunter stays on the ground
+            if (BattleTimeManager.instance.PlayerActing()) {
+                elapsed += Time.deltaTime; //only increment the clock when the action is going on
+            }
+            //maybe add some fun little wiggles/rotation to show the boss struggling
+
+        }
+        else if (elapsed < fallTime + downTime + riseTime) {
+            elapsed += Time.deltaTime;
+            //rise back up to q0 (we could do something more fun than a quatenrion lerp I guess)
+            hunter.rotation = Quaternion.Lerp(qf, q0, (elapsed - fallTime - downTime) / riseTime);
+        }
+        else {//we're up, back into the fight!
+            hunter.rotation = q0;
+            falling = false;
+            if (BattleTimeManager.instance.PlayerActing()) {
+                StartCoroutine(AttackCoroutine());
+            }
+        }
+
     }
 
     public IEnumerator AttackCoroutine() {
@@ -51,7 +101,7 @@ public class HuntingBoss : MonoBehaviour, Enemy {
         float waitTime = 1.0f;
 
         //we call StopAllCoroutines at the end of the round
-        while (BattleTimeManager.instance.PlayerActing()) {
+        while (BattleTimeManager.instance.PlayerActing() && !falling) {
             //pick a straight line + look at the player & random offset
             Vector3 lookTarget = playerTransform.position + new Vector3(UnityEngine.Random.Range(-2f, 2f), 0, UnityEngine.Random.Range(-2f, 2f)) - hunter.transform.position;
             Vector3 runTarget = playerTransform.position;
@@ -102,25 +152,6 @@ public class HuntingBoss : MonoBehaviour, Enemy {
         while (elapsed < duration) {
             elapsed += Time.deltaTime;
             hunter.rotation = Quaternion.Lerp(q0, qf, elapsed / duration);
-            yield return new WaitForEndOfFrame();
-        }
-
-        hunter.rotation = qf;
-
-        yield return null;
-    }
-
-    public IEnumerator FallCoroutine()
-    {
-        float fallDirection = 0.5f;
-        Quaternion q0 = hunter.rotation;
-        Quaternion qf = Quaternion.LookRotation(-Vector3.up, hunter.transform.forward);
-        float elapsed = 0;
-
-        while (elapsed < fallDirection)
-        {
-            elapsed += Time.deltaTime;
-            hunter.rotation = Quaternion.Lerp(q0, qf, elapsed / fallDirection);
             yield return new WaitForEndOfFrame();
         }
 
