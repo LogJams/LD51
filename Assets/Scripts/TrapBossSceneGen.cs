@@ -166,6 +166,7 @@ public class TrapBossSceneGen : MonoBehaviour
         player = Instantiate(playerPrefab) as GameObject;
         player.transform.position = new Vector3(SCENE_WIDTH/4.0f, 2, SCENE_HEIGHT*Mathf.Sqrt(3)/4);
         playerManager = player.GetComponent<PlayerManager>();
+        playerManager.SetCurrentTilePosition(new Vector3(SCENE_WIDTH/ 4.0f, 0, SCENE_HEIGHT* Mathf.Sqrt(3) / 4));
     }
 
     void ShowPath()

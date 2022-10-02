@@ -24,6 +24,11 @@ public class PlayerManager : MonoBehaviour
         controller = player.GetComponent<CharacterController>();
     }
 
+    public void SetCurrentTilePosition(Vector3 currentTile)
+    {
+        currentTilePositon = currentTile;
+    }
+
     public void Update() {
         verticalSpeed += Physics.gravity.y * Time.deltaTime;
         if (controller.isGrounded) {

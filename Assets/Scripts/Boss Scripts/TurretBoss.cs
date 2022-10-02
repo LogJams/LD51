@@ -28,7 +28,7 @@ public class TurretBoss : MonoBehaviour {
     void Start() {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         BattleTimeManager.instance.OnTimerStart += OnRoundStart;
-        BattleTimeManager.instance.OnTimerStart += OnRoundEnd;
+        BattleTimeManager.instance.OnTimerEnd += OnRoundEnd;
     }
 
     public void OnRoundStart(System.Object src, EventArgs e) {
@@ -36,7 +36,7 @@ public class TurretBoss : MonoBehaviour {
     }
 
     public void OnRoundEnd(System.Object src, EventArgs e) {
-
+        StopAllCoroutines();
     }
 
    

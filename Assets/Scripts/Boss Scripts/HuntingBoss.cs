@@ -27,7 +27,7 @@ public class HuntingBoss : MonoBehaviour {
     void Start() {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         BattleTimeManager.instance.OnTimerStart += OnRoundStart;
-        BattleTimeManager.instance.OnTimerStart += OnRoundEnd;
+        BattleTimeManager.instance.OnTimerEnd += OnRoundEnd;
     }
 
     public void OnRoundStart(System.Object src, EventArgs e) {
@@ -107,7 +107,7 @@ public class HuntingBoss : MonoBehaviour {
     public IEnumerator RunCoroutine(Vector3 runTarget, float speed)
     {
         float elapsed = 0;
-        float duration = (runTarget - hunter.transform.position).sqrMagnitude;
+        float duration = (runTarget - hunter.transform.position).magnitude/speed;
         Vector3 runDirection = (runTarget - hunter.transform.position).normalized;
 
         while (elapsed < duration)
