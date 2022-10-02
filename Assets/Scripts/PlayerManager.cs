@@ -20,7 +20,7 @@ public class PlayerManager : MonoBehaviour
         controller = player.GetComponent<CharacterController>();
     }
 
-    public void MovePlayer(List<Vector2Int> currentpath)
+    public void MovePlayer(List<Vector2Int> currentpath, List<GameObject> pathIndicators)
     {
         if (!isMoving)
             return;
@@ -34,6 +34,7 @@ public class PlayerManager : MonoBehaviour
             if ((tilePosition - projectedPlayerPosition).magnitude < 0.1)
             {
                 currentpath.RemoveAt(currentpath.Count - 1);
+                pathIndicators.RemoveAt(currentpath.Count - 1);
 
                 if (currentpath.Count == 0)
                     isMoving = false;
