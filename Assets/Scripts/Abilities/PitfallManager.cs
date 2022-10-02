@@ -59,6 +59,10 @@ public class PitfallManager : MonoBehaviour
             else if (pitfallState == PitfallStates.settingUp)
             {
                 pitfallState = PitfallStates.setUp;
+                PitfallLineCollision colliderScript = instancePitfallLine.GetComponent<PitfallLineCollision>();
+                colliderScript.Setup();
+                colliderScript.parent = this;
+
             } else { 
                 ResetPitfall();
             }
@@ -83,5 +87,19 @@ public class PitfallManager : MonoBehaviour
         Destroy(instancePitfallCube2);
         Destroy(instancePitfallLine);
         pitfallState = PitfallStates.down;
+    }
+
+
+    public void RecieveTrigger(GameObject source) {
+        //see if we use the pitfall trap on an enemy
+        Enemy e = source.GetComponent<Enemy>();
+        if (e != null && e.OnPitfallTrap()) {
+            ResetPitfall();
+        }
+
+        //if this isn't an enemy (e.g., it's a wall) just reset
+        if (e == null) {
+            ResetPitfall();
+        }
     }
 }
