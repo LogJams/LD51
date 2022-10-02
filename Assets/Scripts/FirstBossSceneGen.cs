@@ -54,7 +54,6 @@ public class FirstBossSceneGen : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         if (!playerManager.isMoving)
         {
             //do nothing if we are mousing over the UI or it's not the player's turn
