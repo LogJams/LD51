@@ -18,6 +18,7 @@ public class FirstBossSceneGen : MonoBehaviour
 
     public GameObject playerPrefab;
 
+    private PlayerManager playerManager;
     private GameObject player;
     private CharacterController controller;
 
@@ -25,9 +26,6 @@ public class FirstBossSceneGen : MonoBehaviour
 
     private static int numberTilesX = 20;
     private static int numberTilesZ = 20;
-
-    private bool isMoving = false;
-    private float movingSpeed = 3.0f;
 
     private List<GameObject> _oldPathIndicators = new List<GameObject>();
 
@@ -46,13 +44,13 @@ public class FirstBossSceneGen : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isMoving)
+        if (!playerManager.isMoving)
         {
             ClearPath();
             ShowPath();
         } else
         {
-            MovePlayer();
+            playerManager.MovePlayer(currentpath);
         }
     }
 
@@ -114,6 +112,7 @@ public class FirstBossSceneGen : MonoBehaviour
         player = Instantiate(playerPrefab) as GameObject;
         player.transform.position = new Vector3(numberTilesX/2.0f, 2, numberTilesZ*Mathf.Sqrt(3)/4);
         controller = player.GetComponent<CharacterController>();
+        playerManager = new PlayerManager(player); 
     }
 
     void ShowPath()
@@ -146,7 +145,7 @@ public class FirstBossSceneGen : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             if (currentpath.Count > 0)
-                isMoving = true;
+                playerManager.isMoving = true;
         }
     }
 
@@ -185,30 +184,4 @@ public class FirstBossSceneGen : MonoBehaviour
         }
     }
 
-    void MovePlayer()
-    {
-        if (!isMoving)
-            return;
-
-        if (currentpath.Count > 0)
-        {
-            Vector2Int goalPosition = currentpath.Last();
-            Vector3 tilePosition = GetPositionFromIndex(goalPosition);
-            Vector3 projectedPlayerPosition = new Vector3(player.transform.position.x, 0, player.transform.position.z);
-
-            if ((tilePosition - projectedPlayerPosition).magnitude < 0.1)
-            {
-                currentpath.RemoveAt(currentpath.Count - 1);
-
-                if (currentpath.Count == 0)
-                    isMoving = false;
-            } else
-            {
-                controller.Move((tilePosition - projectedPlayerPosition).normalized * Time.deltaTime * movingSpeed);
-            }
-        } else {
-            // Shouldn't enter this, but let's make sure 
-            throw new Exception("Why are we entering this code?");
-        }
-    }
 }
