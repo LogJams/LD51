@@ -27,7 +27,6 @@ public class FirstBossSceneGen : MonoBehaviour
     private bool isMoving = false;
     private float movingSpeed = 3.0f;
 
-
     private List<GameObject> _oldPathIndicators = new List<GameObject>();
 
     private enum FloorTypeNames
@@ -331,6 +330,6 @@ public class FirstBossSceneGen : MonoBehaviour
         } else {
             // Shouldn't enter this, but let's make sure 
             throw new Exception("Why are we entering this code?");
-        }            
+        }
     }
 }
