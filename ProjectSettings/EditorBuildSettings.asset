@@ -4,5 +4,29 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Main Menu.unity
+    guid: 30f31733a5165f1448e934d90f7c645f
+  - enabled: 1
+    path: Assets/Scenes/FirstBossScene.unity
+    guid: 1ebc9aca15052d04d85dccb8424fa5a3
+  - enabled: 1
+    path: Assets/Scenes/Overworld Scene.unity
+    guid: 1e39ed187c5c31b42bdd7cb334b00432
+  - enabled: 1
+    path: Assets/Scenes/Fight 1.unity
+    guid: a315dc378a7c16e4abdc10090a43758a
+  - enabled: 1
+    path: Assets/Scenes/Fight 2.unity
+    guid: d680cf7c22909144fbb4854dc14a1df8
+  - enabled: 1
+    path: Assets/Scenes/Fight 3.unity
+    guid: 3c945151c96b8914b8d23c506aec79cd
+  - enabled: 1
+    path: Assets/Scenes/Final Fight.unity
+    guid: 130d48bd1288b944291d0c440fa18842
+  - enabled: 1
+    path: Assets/Scenes/Game Over.unity
+    guid: 375a308446305044896be4f422deac7a
   m_configObjects: {}
