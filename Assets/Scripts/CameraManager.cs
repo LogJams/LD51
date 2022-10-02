@@ -6,7 +6,7 @@ public class CameraManager : MonoBehaviour
 {
     private Camera _mainCamera;
 
-    private Vector3 _viewOffset = new Vector3(3.0f, 3.0f, 3.0f);
+    private Vector3 _viewOffset = new Vector3(0.0f, 15.0f, 0.0f);
 
     private Vector3 _oldPlayerPosition;
 
@@ -14,7 +14,6 @@ public class CameraManager : MonoBehaviour
     void Start()
     {
         _mainCamera = Camera.main;
-
         _mainCamera.transform.position = transform.position + _viewOffset;
         _oldPlayerPosition = transform.position;
     }
@@ -24,9 +23,6 @@ public class CameraManager : MonoBehaviour
     {
         // Update the camera
         UpdateCamera();
-
-        // Update the clicked tile
-        GetPathFromClick();
 
         // Keep track of old player position
         _oldPlayerPosition = transform.position;
@@ -38,10 +34,5 @@ public class CameraManager : MonoBehaviour
     void UpdateCamera()
     {
         _mainCamera.transform.position += transform.position - _oldPlayerPosition;
-        _mainCamera.transform.LookAt(transform);
-    }
-
-    void GetPathFromClick()
-    {
     }
 }
