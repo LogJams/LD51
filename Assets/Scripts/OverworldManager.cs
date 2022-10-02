@@ -328,6 +328,17 @@ public class OverworldManager : MonoBehaviour {
             TerrainTypeMap[0, j] = TerrainTypeMap[WORLD_WIDTH - 1, j] = (int)TerrainTypes.cliff;
         }
 
+
+
+        //overwrite occupied tiles with something not navigable
+        for (int i = 0; i < areas.Count; i++) {
+            foreach (var decor in areas[i].decorations) {
+                Vector2Int indices = GetTileIndexFromObject(decor.transform);
+                TerrainTypeMap[indices[0], indices[1]] = (int)TerrainTypes.water;
+            }
+        }
+
+
         //generate remaining tiles
         for (int i = 1; i < WORLD_WIDTH - 1; i++) {
             for (int j = 1; j < WORLD_HEIGHT - 1; j++) {
@@ -336,8 +347,6 @@ public class OverworldManager : MonoBehaviour {
                 }
             }
         }
-
-        //decorate the rest of the world
 
         Debug.Log("Generation complete @ " + (Time.realtimeSinceStartup - t0) * 1000 + " ms");
 

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using static HexagonHelpers;
+
 public class ZoneDecorator : MonoBehaviour {
 
     public List<GameObject> spawnRequired;
@@ -11,9 +13,6 @@ public class ZoneDecorator : MonoBehaviour {
     public List<GameObject> enemyRequired;
 
     public List<GameObject> friendlyRequired;
-
-
-    float Y_SPACING = 0.866024540378f; //sqrt(3)/2
 
     List<int> bossRoomScenes = new List<int> {3, 4, 5 };
 
@@ -52,13 +51,13 @@ public class ZoneDecorator : MonoBehaviour {
         float y0 = zone.y + (float)zone.h / 2;
 
         //spawn objects
-        GameObject go = Instantiate(spawnRequired[0], new Vector3(x0, 1.0f, y0 * Y_SPACING), Quaternion.identity, this.transform );
+        GameObject go = Instantiate(spawnRequired[0], this.transform );
+        SetPosition(go, (int)x0, 1, (int)y0);
         zone.decorations.Add(go);
 
+        //move the player into the domain
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-
-        player.transform.position = new Vector3(x0, 5.0f, y0 * Y_SPACING);
-
+        SetPosition(player, (int)x0, 2.5f, (int)y0 - 2);
     }
 
     void DecorateBoss(Zone zone) {
@@ -66,7 +65,8 @@ public class ZoneDecorator : MonoBehaviour {
         float y0 = zone.y + (float)zone.h / 2;
 
         //spawn objects
-        GameObject go = Instantiate(bossRequired[0], new Vector3(x0, 1.0f, y0 * Y_SPACING), Quaternion.identity, this.transform);
+        GameObject go = Instantiate(bossRequired[0], this.transform);
+        SetPosition(go, (int)x0, 1, (int)y0);
         zone.decorations.Add(go);
         
         Teleport tele = go.GetComponent<Teleport>();
@@ -80,7 +80,8 @@ public class ZoneDecorator : MonoBehaviour {
         float y0 = zone.y + (float)zone.h / 2;
 
         //spawn objects
-        GameObject go = Instantiate(enemyRequired[0], new Vector3(x0, 1.0f, y0 * Y_SPACING), Quaternion.identity, this.transform);
+        GameObject go = Instantiate(enemyRequired[0], this.transform);
+        SetPosition(go, (int)x0, 1, (int)y0);
         zone.decorations.Add(go);
     }
 
@@ -89,7 +90,8 @@ public class ZoneDecorator : MonoBehaviour {
         float y0 = zone.y + (float)zone.h / 2;
 
         //spawn objects
-        GameObject go = Instantiate(friendlyRequired[0], new Vector3(x0, 1.0f, y0 * Y_SPACING), Quaternion.identity, this.transform);
+        GameObject go = Instantiate(friendlyRequired[0], this.transform);
+        SetPosition(go, (int)x0, 1, (int)y0);
         zone.decorations.Add(go);
     }
 

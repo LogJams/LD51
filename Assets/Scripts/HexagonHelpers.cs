@@ -127,7 +127,7 @@ public class HexagonHelpers : MonoBehaviour
         return path;
     }
 
-    public static void SetPosition(GameObject obj, int indxX, int y, int indxZ)
+    public static void SetPosition(GameObject obj, int indxX, float y, int indxZ)
     {
         float iVal = indxX;
         if (indxZ % 2 == 1)
