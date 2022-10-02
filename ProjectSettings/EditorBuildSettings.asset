@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Main Menu.unity
     guid: 30f31733a5165f1448e934d90f7c645f
   - enabled: 1
-    path: Assets/Scenes/FirstBossScene.unity
+    path: Assets/Scenes/TrapBossSceneGen.unity
     guid: 1ebc9aca15052d04d85dccb8424fa5a3
   - enabled: 1
     path: Assets/Scenes/Overworld Scene.unity

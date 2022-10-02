@@ -9,7 +9,7 @@ using static HexagonHelpers;
 
 using UnityEngine.EventSystems;
 
-public class FirstBossSceneGen : MonoBehaviour
+public class TrapBossSceneGen : MonoBehaviour
 {
     public GameObject dirtTile;
     public GameObject waterTile;
@@ -20,7 +20,7 @@ public class FirstBossSceneGen : MonoBehaviour
 
     public GameObject playerPrefab;
 
-    public GameObject turretBoss;
+    public GameObject huntingBoss;
 
     public UI_TimerPanel timer;
 
@@ -128,7 +128,7 @@ public class FirstBossSceneGen : MonoBehaviour
         for (int j = 1; j < SCENE_HEIGHT-1; j++) {
             for (int i = 1; i < SCENE_WIDTH-1; i++) {
                 // Draw a random tile
-                TerrainTypeMap[i, j] = GetRandomFloorType();
+                TerrainTypeMap[i, j] = GetFloorTypeFromIndex(new Vector2Int(i,j));
             }
         }
 
@@ -141,8 +141,8 @@ public class FirstBossSceneGen : MonoBehaviour
             }
         }
 
-        GameObject boss = Instantiate(turretBoss);
-        SetPosition(boss, bossX, 0, bossZ);
+        GameObject boss = Instantiate(huntingBoss);
+        SetPosition(boss, bossX, 2.0f, bossZ);
 
         List<Vector2Int> nbhd = GetAllNeighbors(new Vector2Int(bossX, bossZ));
 
@@ -150,22 +150,20 @@ public class FirstBossSceneGen : MonoBehaviour
         foreach (var pos in nbhd) {
             TerrainTypeMap[pos.x, pos.y] = (int)TerrainTypes.boss;
         }
-
     }
 
-    private int GetRandomFloorType()
+    private int GetFloorTypeFromIndex(Vector2Int idx)
     {
-        if (UnityEngine.Random.Range(0, 10) < 3)
-            return (int)TerrainTypes.grass;
-
-        
-        return (int)TerrainTypes.path;
+        if ((idx - new Vector2Int((int)(0.5f*SCENE_WIDTH), (int)(0.5f*SCENE_HEIGHT))).sqrMagnitude < 3)
+            return (int)TerrainTypes.water;
+                
+        return (int)TerrainTypes.grass;
     }
 
     void GeneratePlayer()
     {
         player = Instantiate(playerPrefab) as GameObject;
-        player.transform.position = new Vector3(SCENE_WIDTH/2.0f, 2, SCENE_HEIGHT*Mathf.Sqrt(3)/4);
+        player.transform.position = new Vector3(SCENE_WIDTH/4.0f, 2, SCENE_HEIGHT*Mathf.Sqrt(3)/4);
         playerManager = player.GetComponent<PlayerManager>();
     }
 
