@@ -13,6 +13,7 @@ public class FirstBossSceneGen : MonoBehaviour
     public GameObject dirtTile;
     public GameObject waterTile;
     public GameObject grassTile;
+    public GameObject cliffTile;
 
     public GameObject pathOutline;
 
@@ -69,7 +70,8 @@ public class FirstBossSceneGen : MonoBehaviour
         TileMapper = new Dictionary<TerrainTypes, GameObject>() {
             { TerrainTypes.path, dirtTile},
             { TerrainTypes.grass, grassTile},
-            { TerrainTypes.water, waterTile}
+            { TerrainTypes.water, waterTile},
+            { TerrainTypes.cliff, cliffTile}
         };
     }
 
@@ -128,7 +130,7 @@ public class FirstBossSceneGen : MonoBehaviour
             Vector2Int start = GetTileIndexFromObject(player.transform);
             Vector2Int goal = GetTileIndexFromObject(hit.transform);
 
-            List<Vector2Int> path = FindPath(TerrainTypeMap, start, goal, 0, numberTilesX - 1, 0, numberTilesZ - 1);
+            List<Vector2Int> path = FindPath(start, goal);
 
             Debug.Log(path.Count);
             foreach (Vector2Int wayPoint in path)
@@ -149,6 +151,90 @@ public class FirstBossSceneGen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// A* following https://www.redblobgames.com/pathfinding/a-star/introduction.html
+    /// </summary>
+    /// <param name="start"></param>
+    /// <param name="goal"></param>
+    /// <returns></returns>
+    List<Vector2Int> FindPath(Vector2Int start, Vector2Int goal) 
+    {
+        Queue<Vector2Int> frontier = new Queue<Vector2Int>();
+        frontier.Enqueue(start);
+        Dictionary<Vector2Int, Vector2Int> came_from = new Dictionary<Vector2Int, Vector2Int>();
+        Dictionary<Vector2Int, float> cost_so_far = new Dictionary<Vector2Int, float>();
+
+        List<Vector2Int> path = new List<Vector2Int>();
+
+        cost_so_far.Add(start, 0);
+
+        while (frontier.Count > 0)
+        {
+            Vector2Int current = frontier.Dequeue();
+
+            if (current == goal)
+            {
+                while (true)
+                {
+                    path.Add(current);
+                    current = came_from[current];
+
+                    if (current == start)
+                        return path;
+                }
+            }
+
+            foreach (Vector2Int neighbor in GetWalkableNeighbors(current))
+            {
+                // Assuming one unit cost per neighbor
+                float new_cost = cost_so_far[current] + 1;
+
+                // Ignore duplicate field
+                if (cost_so_far.ContainsKey(neighbor))
+                    continue;
+
+                cost_so_far[neighbor] = new_cost;
+
+                frontier.Enqueue(neighbor);
+                came_from[neighbor] = current;
+            }
+        }
+
+        return path;
+    }
+
+    List<Vector2Int> GetWalkableNeighbors(Vector2Int hex)
+    {
+        List<Vector2Int> allNeighbors = GetAllNeighbors(hex);
+        List<Vector2Int> neighbors = new List<Vector2Int>();
+
+        foreach (Vector2Int neighbor in allNeighbors)
+        {
+            if (IsWalkable(GetFloorType(TerrainTypeMap, neighbor)))
+                neighbors.Add(neighbor);
+
+        }
+
+        return neighbors;
+    }
+
+
+    Vector2Int GetTileIndexFromObject(Transform tile)
+    {
+        // Every x position is either an integer or an integer + 0.5
+        // Either way, the integer represents its coordinate (so we can subtract a small amout and round)
+        int xIdx = Mathf.RoundToInt(tile.transform.position.x - 0.1f);
+        int zIdx = Mathf.RoundToInt(tile.transform.position.z * 2 / Mathf.Sqrt(3));
+
+        return new Vector2Int(xIdx, zIdx);
+    }
+
+    Vector3 GetPositionFromIndex(Vector2Int tileIdx)
+    {
+        float xOffset = tileIdx.y % 2 == 0 ? 0 : 0.5f;
+        return new Vector3(tileIdx.x + xOffset, 0, tileIdx.y * Mathf.Sqrt(3) / 2);
+    }
+
     void VisualizeNeighbors()
     {
         // Show the potential path
@@ -159,7 +245,7 @@ public class FirstBossSceneGen : MonoBehaviour
         {
             Vector2Int tile = GetTileIndexFromObject(hit.transform);
 
-            foreach (Vector2Int neighbor in GetWalkableNeighbors(TerrainTypeMap, tile, 0, numberTilesX - 1, 0, numberTilesZ - 1))
+            foreach (Vector2Int neighbor in GetWalkableNeighbors(tile))
             {
                 GameObject newTile = Instantiate(pathOutline) as GameObject;
                 SetPosition(newTile, neighbor.x, 0, neighbor.y);
