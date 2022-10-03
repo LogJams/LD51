@@ -27,6 +27,10 @@ public class OverworldManager : MonoBehaviour {
 
     public static OverworldManager instance;
 
+    public event System.EventHandler OnPlayerEnterRoom;
+    public event System.EventHandler OnPlayerExitRoom;
+    bool PlayerInZone = true; //track whether we fire the enter/exit event
+
     BattleTimeManager timing;
 
     //parameters for hexagon geometry
@@ -123,9 +127,15 @@ public class OverworldManager : MonoBehaviour {
         if (timing.InBattle()) return; //we don't care about triggering new areas in battle
 
         //check if we should start boss1battle or boss2battle
-        foreach (var area in bossAreas) {
+        bool wasInZone = PlayerInZone;
+        PlayerInZone = false;
+        Zone triggeringArea = null;
+        foreach (var area in areas) {
             if (area.x <= index.x && area.x + area.w >= index.x && area.y < index.y && area.y + area.h > index.y) {
-                //we entered a boss area, figure out which one
+                //we are in a zone, save it!
+                PlayerInZone = true;
+                triggeringArea = area;
+                //if we entered a boss area, figure out which one
                 if (area.boss_index == 1) {
                     BattleTimeManager.instance.StartBoss1Battle();
                     ResetPlayerMovement();
@@ -134,7 +144,16 @@ public class OverworldManager : MonoBehaviour {
                     BattleTimeManager.instance.StartBoss2Battle();
                     ResetPlayerMovement();
                 }
-                break;
+            }
+        }
+
+        //if we changed zones then fire an event
+        if (wasInZone != PlayerInZone) {
+            if (wasInZone) {
+                OnPlayerExitRoom?.Invoke(triggeringArea, System.EventArgs.Empty);
+            }
+            else {
+                OnPlayerExitRoom?.Invoke(triggeringArea, System.EventArgs.Empty);
             }
         }
 
