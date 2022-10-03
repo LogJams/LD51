@@ -92,6 +92,13 @@ public class OverworldManager : MonoBehaviour {
 
     private void Start() {
         timing = BattleTimeManager.instance;
+
+        foreach(Zone area in areas) {
+            if (area.type == ZONE_TYPES.SPAWN) {
+                OnPlayerEnterRoom?.Invoke(area, System.EventArgs.Empty);
+            }
+        }
+
     }
 
 
@@ -153,7 +160,7 @@ public class OverworldManager : MonoBehaviour {
                 OnPlayerExitRoom?.Invoke(triggeringArea, System.EventArgs.Empty);
             }
             else {
-                OnPlayerExitRoom?.Invoke(triggeringArea, System.EventArgs.Empty);
+                OnPlayerEnterRoom?.Invoke(triggeringArea, System.EventArgs.Empty);
             }
         }
 
