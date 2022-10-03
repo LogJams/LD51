@@ -12,7 +12,7 @@ public class CameraManager : MonoBehaviour
 
     private Camera _mainCamera;
 
-    bool initialized = false;
+    private Vector3 currentTarget;
 
     // Start is called before the first frame update
     void Awake()
@@ -26,56 +26,17 @@ public class CameraManager : MonoBehaviour
 
     void Start()
     {
-        OverworldManager.instance.OnPlayerEnterRoom += OnEnterRoom;
-        OverworldManager.instance.OnPlayerExitRoom += OnLeaveRoom;
+        // Look at player
+        _mainCamera.transform.position = player.transform.position + cameraBoom;
+        currentTarget = player.transform.position;
     }
 
-    public void OnEnterRoom(System.Object src, System.EventArgs e)
+    void Update()
     {
-        Zone room = (Zone)src;
+        float bias = 3.0f;
 
-        // Find the position of the middle(ish) hexagon
-        Vector2Int roomMiddle = new Vector2Int(room.x + (int)(0.5f * room.w), room.y + (int)(0.5f * room.h));
-        Vector3 roomPos = HexagonHelpers.GetPositionFromIndex(roomMiddle);
-
-        // Run the coroutine
-        if (initialized)
-            StartCoroutine(PanToPositionCoroutine(roomPos));
-        else
-        {
-            _mainCamera.transform.position = roomPos + cameraBoom;
-            initialized = true;
-        }
-    }
-
-    public void OnLeaveRoom(System.Object src, System.EventArgs e)
-    {
-        StartCoroutine(PanToPositionCoroutine(player.transform.position));
-    }
-
-    private IEnumerator PanToPositionCoroutine(Vector3 pos)
-    {
-        float elapsed = 0;
-        float cameraPanSpeed = 10.0f;
-
-        Vector3 projectedPos = new Vector3(pos.x, 0, pos.z);
-        Vector3 projectedCameraPos = new Vector3(_mainCamera.transform.position.x, 0, _mainCamera.transform.position.z);
-
-        float duration = (projectedPos - projectedCameraPos + projectedCameraBoom).magnitude / cameraPanSpeed;
-        Vector3 panDirection = (projectedPos - projectedCameraPos + projectedCameraBoom).normalized;
-
-        // Ignore the y coordinate
-        panDirection.y = 0;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            _mainCamera.transform.position += cameraPanSpeed * panDirection * Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-
-        _mainCamera.transform.position = projectedPos + cameraBoom;
-
-        yield return null;
+        // Lerp after the player
+        currentTarget = player.transform.position + cameraBoom;
+        _mainCamera.transform.position = Vector3.Lerp(_mainCamera.transform.position, currentTarget, bias * Time.deltaTime); ;
     }
 }
