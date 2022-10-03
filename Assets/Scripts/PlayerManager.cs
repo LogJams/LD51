@@ -11,10 +11,25 @@ public class PlayerManager : MonoBehaviour {
     public event EventHandler OnUnlockPitfall;
     public event EventHandler OnHealthChange; //the UI can use this to update the health
     public event EventHandler OnDeath;
+    public event EventHandler OnStartMoving;
+    public event EventHandler OnStopMoving;
+
+    public SoundManager soundManager;
 
     public GameObject player;
 
-    public bool isMoving = false;
+    private bool _isMoving = false;
+    public bool isMoving
+    {
+        get { return _isMoving; }
+        set
+        {
+            _isMoving = value;
+            if (isMoving) OnStartMoving?.Invoke(this, EventArgs.Empty);
+            else OnStopMoving?.Invoke(this, EventArgs.Empty);
+
+        }
+    }
     private float movingSpeed = 3.0f;
 
     private float movingTimeSinceLastTile = 0.0f;
@@ -25,7 +40,6 @@ public class PlayerManager : MonoBehaviour {
 
     public Vector3 previousTilePosition = new Vector3();
     public Vector3 currentTilePositon = new Vector3();
-
 
     public float interactionRange = 2.5f;
 
@@ -173,7 +187,9 @@ public class PlayerManager : MonoBehaviour {
 
                 // If this was the last way-point we are done moving
                 if (currentpath.Count == 0)
+                {
                     isMoving = false;
+                }
             }
             else
             {

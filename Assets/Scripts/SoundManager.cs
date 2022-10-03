@@ -6,6 +6,7 @@ public class SoundManager : MonoBehaviour
 {
     public AudioSource disableBoss;
     public AudioSource pitfallSound;
+    public AudioSource playerMoveSound;
     public AudioSource mainBackgroundMusic;
     public AudioSource bossOneBackgroundMusic;
     public AudioSource bossTwoBackgroundMusic;
@@ -24,9 +25,10 @@ public class SoundManager : MonoBehaviour
 
         disableBoss.volume = SoundConstants.VOLUME;
         pitfallSound.volume = SoundConstants.VOLUME;
-        mainBackgroundMusic.volume = SoundConstants.VOLUME;
-        bossOneBackgroundMusic.volume = SoundConstants.VOLUME;
-        bossTwoBackgroundMusic.volume = SoundConstants.VOLUME;
+        playerMoveSound.volume = 5*SoundConstants.VOLUME;
+        mainBackgroundMusic.volume = SoundConstants.MUSICVOLUME;
+        bossOneBackgroundMusic.volume = SoundConstants.MUSICVOLUME;
+        bossTwoBackgroundMusic.volume = SoundConstants.MUSICVOLUME;
     }
 
     // Start is called before the first frame update
@@ -37,6 +39,8 @@ public class SoundManager : MonoBehaviour
         BattleTimeManager.instance.OnBattleEnd += PlayBackgroundMusic;
         pitfallManager.OnPitfallStateChange += PlayPickUpSound;
         playerManager.OnUnlockPitfall += PlayPickUpSound;
+        playerManager.OnStartMoving += PlayPlayerMove;
+        playerManager.OnStopMoving += StopPlayerMove;
     }
 
     public void PlayDisableSound(System.Object src, System.EventArgs e)
@@ -53,11 +57,11 @@ public class SoundManager : MonoBehaviour
     {
         if (bossFight == 0)
         {
-            mainBackgroundMusic.Stop();
+            mainBackgroundMusic.Pause();
             bossOneBackgroundMusic.Play();
         } else
         {
-            mainBackgroundMusic.Stop();
+            mainBackgroundMusic.Pause();
             bossTwoBackgroundMusic.Play();
         }
 
@@ -70,5 +74,15 @@ public class SoundManager : MonoBehaviour
         bossOneBackgroundMusic.Stop();
         bossTwoBackgroundMusic.Stop();
         mainBackgroundMusic.Play();
+    }
+
+    public void PlayPlayerMove(System.Object src, System.EventArgs e)
+    {
+        playerMoveSound.Play();
+    }
+
+    public void StopPlayerMove(System.Object src, System.EventArgs e)
+    {
+        playerMoveSound.Stop();
     }
 }
