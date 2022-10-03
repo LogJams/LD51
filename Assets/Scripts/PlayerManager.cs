@@ -101,6 +101,15 @@ public class PlayerManager : MonoBehaviour {
         }
         controller.Move( (movement + new Vector3(0, verticalSpeed, 0) ) * Time.deltaTime);
 
+        //look at that!
+        Vector3 lookdir = movement;
+        lookdir.y = 0;
+        if (lookdir.sqrMagnitude > 0) {
+            float bias = 5.0f;
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(lookdir), bias * Time.deltaTime); ;
+        }
+
+
         hpTimer -= Time.deltaTime; //track how long it's been since we last took damage
 
         if (Input.GetMouseButtonDown(0)) {

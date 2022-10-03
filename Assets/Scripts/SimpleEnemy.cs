@@ -12,6 +12,11 @@ public class SimpleEnemy : MonoBehaviour, Enemy {
     public float moveTime = 2.0f;
     public float moveSpeed = 1.5f;
 
+    public Transform body;
+    public Transform foot;
+
+    private Vector3 b0;
+    private Vector3 f0;
 
     Vector3 targetPos;
     float timer;
@@ -21,10 +26,17 @@ public class SimpleEnemy : MonoBehaviour, Enemy {
     // Start is called before the first frame update
     void Start() {
         targetPos = transform.position;
+
+        b0 = body.localPosition;
+        f0 = foot.localPosition;
+
     }
 
     // Update is called once per frame
     void Update() {
+
+        foot.localPosition = f0 + new Vector3(0, 0.2f * Mathf.Cos(4*Time.time), 0);
+        body.localPosition = b0 + new Vector3(0, 0.2f * Mathf.Cos(4*Time.time - 1.2f), 0);
 
         timer -= Time.deltaTime;
 
