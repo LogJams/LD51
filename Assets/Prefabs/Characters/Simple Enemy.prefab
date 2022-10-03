@@ -130,7 +130,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25e830238e4ec634499da508411b1b29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveTime: 2
+  moveTime: 2.3
   moveSpeed: 1.5
   body: {fileID: 8633162810445561667}
   foot: {fileID: 662747089482363982}

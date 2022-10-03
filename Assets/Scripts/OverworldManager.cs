@@ -75,6 +75,25 @@ public class OverworldManager : MonoBehaviour {
     private Vector2Int previousTileHover = new Vector2Int();
 
 
+    private List<Vector2Int> dangerTiles;
+
+    public void AddDangerTiles(HashSet<Vector2Int> tiles) {
+        dangerTiles.AddRange(tiles);
+
+        Vector2Int playerTile = HexagonHelpers.GetTileIndexFromObject(player.transform);
+
+        if (tiles.Contains(playerTile)) {
+            playerManager.TakeDamage(1);
+        }
+
+
+    }
+
+    public void ClearDangerTiles() {
+        dangerTiles.Clear();
+    }
+
+
     void Awake() {
 
         if (instance != null && instance != this) {
@@ -88,7 +107,11 @@ public class OverworldManager : MonoBehaviour {
         Generate();
         player = GameObject.FindGameObjectWithTag("Player");
         playerManager = player.GetComponent<PlayerManager>();
+
+        dangerTiles = new List<Vector2Int>();
+
     }
+
 
     private void Start() {
         timing = BattleTimeManager.instance;
@@ -118,6 +141,9 @@ public class OverworldManager : MonoBehaviour {
     public void BossKilled(int idx)
     {
         OnBossDisable?.Invoke(this, System.EventArgs.Empty);
+        EnableRoom(idx);
+
+        dangerTiles.Clear();
 
         for (int i = 0; i < bossAreas.Count; i++) {
             if (bossAreas[i].boss_index == idx) {
@@ -128,6 +154,49 @@ public class OverworldManager : MonoBehaviour {
     }
 
 
+    private void DisableRoom(int bossid) {
+        Zone bz = null;
+        foreach (Zone z in areas) {
+            if (z.boss_index == bossid) {
+                bz = z;
+                break;
+            }
+        }
+
+        for (int i = bz.x; i <= bz.x + bz.w; i++) {
+            TerrainTypeMap[i, bz.y] = (int)TerrainTypes.boss;
+            TerrainTypeMap[i, bz.y+bz.h] = (int)TerrainTypes.boss;
+        }
+        for (int j = bz.y; j <= bz.y + bz.h; j++) {
+            TerrainTypeMap[bz.x, j] = (int)TerrainTypes.boss;
+            TerrainTypeMap[bz.x + bz.w, j] = (int)TerrainTypes.boss;
+        }
+
+    }
+
+    private void EnableRoom(int bossid) {
+        Zone bz = null;
+        foreach (Zone z in areas) {
+            if (z.boss_index == bossid) {
+                bz = z;
+                break;
+            }
+        }
+
+        for (int i = bz.x; i <= bz.x + bz.w; i++) {
+            TerrainTypeMap[i, bz.y] = (int)TerrainTypes.grass;
+            TerrainTypeMap[i, bz.y + bz.h] = (int)TerrainTypes.grass;
+        }
+        for (int j = bz.y; j <= bz.y + bz.h; j++) {
+            TerrainTypeMap[bz.x, j] = (int)TerrainTypes.grass;
+            TerrainTypeMap[bz.x + bz.w, j] = (int)TerrainTypes.grass;
+        }
+
+    }
+
+
+
+
     public List<Vector2Int> GetNeighbors(Transform tf) {
         return GetWalkableNeighbors(TerrainTypeMap, GetTileIndexFromObject(tf));
     }
@@ -135,6 +204,10 @@ public class OverworldManager : MonoBehaviour {
 
     public void PlayerMovement(Vector2Int index) {
         //if (timing.InBattle()) return; //we don't care about triggering new areas in battle
+
+        if (dangerTiles.Contains(index)) {
+            playerManager.TakeDamage(1);
+        }
 
         //check if we should start boss1battle or boss2battle
         bool wasInZone = PlayerInZone;
@@ -149,10 +222,12 @@ public class OverworldManager : MonoBehaviour {
                 if (area.boss_index == 1 && !wasInZone) {
                     BattleTimeManager.instance.StartBoss1Battle();
                     ResetPlayerMovement();
+                    DisableRoom(1);
                 }
                 if (area.boss_index == 2 && !wasInZone) {
                     BattleTimeManager.instance.StartBoss2Battle();
                     ResetPlayerMovement();
+                    DisableRoom(2);
                 }
             }
         }

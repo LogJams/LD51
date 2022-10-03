@@ -5,13 +5,16 @@ using UnityEngine;
 /// <summary>
 /// this script unlocks the pitfall ability when clicked on!
 /// </summary>
-public class UnlockPitfall : MonoBehaviour, Interactable {
+public class HealthPickup : MonoBehaviour, Interactable {
+
+    public Transform rotator;
+
+    public float rotRate = 30f;
 
     void Update() {
-
-        transform.position = new Vector3(transform.position.x, 1 + 0.25f * Mathf.Cos(Time.time / 3.0f), transform.position.z);
-
+        rotator.Rotate(Vector3.up, Time.deltaTime * rotRate);
     }
+
     public void Interact(PlayerManager src) {
 
         //GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>().UnlockPitfall();
@@ -21,8 +24,7 @@ public class UnlockPitfall : MonoBehaviour, Interactable {
 
     public void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Player")) {
-            other.GetComponent<PlayerManager>().UnlockPitfall();
-
+            other.GetComponent<PlayerManager>().Heal();
             Destroy(this.gameObject);
         }
     }

@@ -52,6 +52,9 @@ public class PlayerManager : MonoBehaviour {
         OnUnlockPitfall?.Invoke(this, EventArgs.Empty);
     }
 
+    public void Heal() {
+        Health = Health + 1;
+    }
     private void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.GetComponent<Enemy>() != null && hpTimer <= 0) {
             

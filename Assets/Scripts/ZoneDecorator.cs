@@ -6,9 +6,7 @@ using static HexagonHelpers;
 
 public class ZoneDecorator : MonoBehaviour {
 
-    public GameObject signpost;
-    public GameObject treasure;
-    public GameObject door;
+    public GameObject healingItem;
     public GameObject simpleEnemy;
 
 
@@ -43,9 +41,9 @@ public class ZoneDecorator : MonoBehaviour {
         float y0 = zone.y + (float)zone.h / 2;
 
         //spawn objects
-        GameObject go = Instantiate(signpost, this.transform );
-        SetPosition(go, (int)x0, 1, (int)y0);
-        zone.decorations.Add(go);
+        //GameObject go = Instantiate(signpost, this.transform );
+        //SetPosition(go, (int)x0, 1, (int)y0);
+        //zone.decorations.Add(go);
 
     }
 
@@ -53,13 +51,17 @@ public class ZoneDecorator : MonoBehaviour {
         float x0 = zone.x + (float)zone.w / 2;
         float y0 = zone.y + (float)zone.h / 2;
 
+
         //spawn objects
-        GameObject go = Instantiate(treasure, this.transform);
-        SetPosition(go, (int)x0, 1, (int)y0);
+       /* GameObject go = Instantiate(healingItem, this.transform);
+        SetPosition(go, Random.Range(zone.x + 1, zone.x + zone.w - 1), 1, Random.Range(zone.y + 1, zone.y + zone.h - 1) );
         zone.decorations.Add(go);
 
-
-
+        go = Instantiate(simpleEnemy, this.transform);
+        SetPosition(go, Random.Range(zone.x + 1, zone.x + zone.w - 1), 1, Random.Range(zone.y + 1, zone.y + zone.h - 1));
+        zone.decorations.Add(go);
+        go.GetComponent<SimpleEnemy>().parentZone = zone;
+       */
 
 
         //spawn the boss
@@ -78,15 +80,21 @@ public class ZoneDecorator : MonoBehaviour {
     }
 
     void DecorateEnemy(Zone zone) {
-        float x0 = zone.x + (float)zone.w / 2;
-        float y0 = zone.y + (float)zone.h / 2;
 
-        //spawn objects
-        GameObject go = Instantiate(simpleEnemy, this.transform);
-        SetPosition(go, (int)x0, 1, (int)y0);
+        //spawn healing item
+        GameObject go = Instantiate(healingItem, this.transform);
+        SetPosition(go, Random.Range(zone.x + 1, zone.x + zone.w - 1), 1, Random.Range(zone.y + 1, zone.y + zone.h - 1));
         zone.decorations.Add(go);
 
-        go.GetComponent<SimpleEnemy>().parentZone = zone;
+
+        //spawn objects
+        for (int i = 0; i < Random.Range(1, 3); i++) {
+            go = Instantiate(simpleEnemy, this.transform);
+            SetPosition(go, Random.Range(zone.x + 1, zone.x + zone.w - 1), 1, Random.Range(zone.y + 1, zone.y + zone.h - 1));
+            zone.decorations.Add(go);
+            go.GetComponent<SimpleEnemy>().parentZone = zone;
+        }
+
 
     }
 
@@ -95,9 +103,9 @@ public class ZoneDecorator : MonoBehaviour {
         float y0 = zone.y + (float)zone.h / 2;
 
         //spawn objects
-        GameObject go = Instantiate(door, this.transform);
-        SetPosition(go, (int)x0, 1, (int)y0);
-        zone.decorations.Add(go);
+        //GameObject go = Instantiate(door, this.transform);
+        //SetPosition(go, (int)x0, 1, (int)y0);
+        //zone.decorations.Add(go);
     }
 
 
