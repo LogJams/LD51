@@ -21,14 +21,17 @@ public class PitfallManager : MonoBehaviour
 
     bool unlocked = false;
 
-    private enum PitfallStates
+    public event System.EventHandler OnPitfallStateChange;
+
+    public enum PitfallStates
     {
         down = 0,
         settingUp = 1,
         setUp = 2
     }
 
-    private PitfallStates pitfallState = PitfallStates.down;
+    private PitfallStates _pitfallState = PitfallStates.down;
+    public PitfallStates pitfallState { get { return _pitfallState; } private  set { _pitfallState = value; OnPitfallStateChange?.Invoke(this, System.EventArgs.Empty); } }
 
     void Start()
     {

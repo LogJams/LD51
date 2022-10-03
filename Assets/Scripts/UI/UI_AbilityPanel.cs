@@ -6,34 +6,49 @@ using System;
 
 public class UI_AbilityPanel : MonoBehaviour {
 
-    public GameObject buttonPrefab;
+    public Image PitfallIcon;
+    public GameObject pitfallText;
+    PlayerManager player;
+    PitfallManager pm;
 
-    TMP_Player player;
+    public Sprite DownSprite;
+    public Sprite UpSprite;
+    public Sprite SettingUpSprite;
 
     // Start is called before the first frame update
     void Start() {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<TMP_Player>();
-        UpdateAbilityUI();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>();
+        pm = player.GetComponent<PitfallManager>();
+        player.OnUnlockPitfall += UnlockAbility;
+
+        //set pitfall icon to no ability
+        // PitfallIcon
+        pitfallText.SetActive(false);
     }
 
-    
-    public void OnUpdateAbilities(System.Object src, EventArgs e) {
-        UpdateAbilityUI();
+
+    public void UnlockAbility(System.Object src, EventArgs e) {
+        PitfallIcon.gameObject.SetActive(true);
+        pitfallText.gameObject.SetActive(true);
+        //play a sound or something!
+
+        pm.OnPitfallStateChange += OnPitfallStateChange;
+        PitfallIcon.sprite = DownSprite;
     }
 
 
-    void UpdateAbilityUI() {
-        while (transform.childCount > 1) {
-            GameObject.Destroy(transform.GetChild(0).gameObject);
-        }
-
-        for (int i = 0; i < player.abilities.Count; i++) {
-            if (player.abilities[i].unlocked) {
-                GameObject go = GameObject.Instantiate(buttonPrefab, this.transform);
-                go.transform.SetSiblingIndex(go.transform.GetSiblingIndex() - 1); //move 1 up the hierarchys
-                Button b = go.GetComponent<Button>();
-                b.GetComponentInChildren<Text>().text = player.abilities[i].name;
-            }
+    public void OnPitfallStateChange(System.Object src, EventArgs e) {
+        switch (pm.pitfallState) {
+            default:
+            case PitfallManager.PitfallStates.down:
+                PitfallIcon.sprite = DownSprite;
+                break;
+            case PitfallManager.PitfallStates.setUp:
+                PitfallIcon.sprite = UpSprite;
+                break;
+            case PitfallManager.PitfallStates.settingUp:
+                PitfallIcon.sprite = SettingUpSprite;
+                break;
         }
     }
 

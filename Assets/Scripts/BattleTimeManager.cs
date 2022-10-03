@@ -70,6 +70,7 @@ public class BattleTimeManager : MonoBehaviour {
     }
 
     public void EndBattle(System.Object src, EventArgs e) {
+        Debug.Log("End of the battle!!!");
         OnBattleEnd?.Invoke(this, EventArgs.Empty);
         inBattleMode = false;
         playerTurn = false;

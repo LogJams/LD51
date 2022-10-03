@@ -124,7 +124,7 @@ public class OverworldManager : MonoBehaviour {
 
 
     public void PlayerMovement(Vector2Int index) {
-        if (timing.InBattle()) return; //we don't care about triggering new areas in battle
+        //if (timing.InBattle()) return; //we don't care about triggering new areas in battle
 
         //check if we should start boss1battle or boss2battle
         bool wasInZone = PlayerInZone;
@@ -136,11 +136,11 @@ public class OverworldManager : MonoBehaviour {
                 PlayerInZone = true;
                 triggeringArea = area;
                 //if we entered a boss area, figure out which one
-                if (area.boss_index == 1) {
+                if (area.boss_index == 1 && !wasInZone) {
                     BattleTimeManager.instance.StartBoss1Battle();
                     ResetPlayerMovement();
                 }
-                if (area.boss_index == 2) {
+                if (area.boss_index == 2 && !wasInZone) {
                     BattleTimeManager.instance.StartBoss2Battle();
                     ResetPlayerMovement();
                 }
