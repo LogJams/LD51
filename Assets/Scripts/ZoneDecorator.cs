@@ -15,8 +15,6 @@ public class ZoneDecorator : MonoBehaviour {
     public GameObject turretBoss;
     public GameObject hunterBoss;
 
-    int bossSceneIndex = 0;
-
     public void DecorateZone(Zone zone) {
         //note that the ground is at y = 1m
         zone.decorations = new List<GameObject>();
@@ -65,20 +63,18 @@ public class ZoneDecorator : MonoBehaviour {
 
 
         //spawn the boss
-        if (bossSceneIndex == 0) {
+        if (zone.boss_index == 1) {
             GameObject boss = Instantiate(turretBoss, this.transform);
             SetPosition(boss, (int)(x0 + 3), 1, (int)y0);
             zone.decorations.Add(boss);
             BattleTimeManager.instance.SetBoss1(boss.GetComponent<TurretBoss>());
         }
-        if (bossSceneIndex == 1) {
+        if (zone.boss_index == 2) {
             GameObject boss = Instantiate(hunterBoss, this.transform);
             SetPosition(boss, (int)(x0 + 3), 1, (int)y0);
             zone.decorations.Add(boss);
             BattleTimeManager.instance.SetBoss2(boss.GetComponent<HuntingBoss>());
         }
-        bossSceneIndex++;
-        zone.boss_index = bossSceneIndex; // 1 or 2 for boss1 and boss2
     }
 
     void DecorateEnemy(Zone zone) {

@@ -532,28 +532,51 @@ public class OverworldManager : MonoBehaviour {
                 minDegree = areas[i].degree;
                 minDegreeIdx = i;
             }
-            if (areas[i].degree > maxDegree) {
-                maxDegree = areas[i].degree;
-                maxDegreeIdx = i;
-            }
+           // if (areas[i].degree > maxDegree) {
+           //     maxDegree = areas[i].degree;
+           //     maxDegreeIdx = i;
+           // }
         }
 
 
         //the zone with the lowest degree is the player
         areas[minDegreeIdx].type = ZONE_TYPES.SPAWN;
-        //the zone with the highest degree is friendly
-        areas[maxDegreeIdx].type = ZONE_TYPES.FRIENDLY;
-        //remove them from unassigned
         unassignedAreas.Remove(minDegreeIdx);
-        unassignedAreas.Remove(maxDegreeIdx);
+
+        //get all areas adjacent to minDegreeIndex
+        for (int i = 0; i < NUM_ZONES; i++) {
+            if (adjacency[minDegreeIdx, i] != 0) {
+                areas[i].type = ZONE_TYPES.BOSS;
+                areas[i].boss_index = 1;
+                bossAreas.Add(areas[i]);
+                unassignedAreas.Remove(i);
+            }
+        }
+
+        //areas[maxDegreeIdx].type = ZONE_TYPES.BOSS;
+        //areas[maxDegreeIdx].boss_index = 2;
+        //unassignedAreas.Remove(maxDegreeIdx);
+
+        //randomly pick a 2nd boss room
+        int idx = unassignedAreas[Random.Range(0, unassignedAreas.Count)];
+        unassignedAreas.Remove(idx);
+        areas[idx].type = ZONE_TYPES.BOSS;
+        areas[idx].boss_index = 2;
+        bossAreas.Add(areas[idx]);
+
+        //the zone with the highest degree is friendly
+        //areas[maxDegreeIdx].type = ZONE_TYPES.FRIENDLY;
+        //remove them from unassigned
+        //unassignedAreas.Remove(minDegreeIdx);
+        //unassignedAreas.Remove(maxDegreeIdx);
 
         //assign X fight rooms (we need to design this)
-        for (int i = 0; i < NUM_BOSS_ZONES; i++) {
+        /*for (int i = 0; i < NUM_BOSS_ZONES; i++) {
             int idx = unassignedAreas[Random.Range(0, unassignedAreas.Count)];
             unassignedAreas.Remove(idx);
             areas[idx].type = ZONE_TYPES.BOSS;
             bossAreas.Add(areas[idx]);
-        }
+        }*/
         //remaining rooms will be enemies
         for (int i = 0; i < unassignedAreas.Count; i++) {
             areas[unassignedAreas[i]].type = ZONE_TYPES.ENEMY;
