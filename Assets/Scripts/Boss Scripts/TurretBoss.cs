@@ -31,13 +31,12 @@ public class TurretBoss : MonoBehaviour, Enemy {
     private void Awake() {
         tileOutlines = new List<GameObject>();
         attackLocations = new HashSet<Vector2Int>();
-
+        audioSrc = GetComponent<AudioSource>();
         audioSrc.volume = SoundConstants.VOLUME;
     }
     // Start is called before the first frame update
     void Start() {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
-        audioSrc = GetComponent<AudioSource>();
     }
 
     public bool OnPitfallTrap() {
@@ -156,7 +155,8 @@ public class TurretBoss : MonoBehaviour, Enemy {
             //play some "on tile hit" particle effect
 
             //damage the player if they enter any of the tiles we are attacking
-            
+            OverworldManager.instance.AddDangerTiles(attackLocations);
+
             //wait for the attack to finish
             yield return new WaitForSeconds(attackTime);
 
@@ -169,6 +169,7 @@ public class TurretBoss : MonoBehaviour, Enemy {
 
     void Cleanup() {
         //***** clean up the attack
+        OverworldManager.instance.ClearDangerTiles();
         // stop the particles and attack points
         foreach (var ps in fireParticles) {
             ps.Stop();

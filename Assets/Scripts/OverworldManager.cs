@@ -75,6 +75,25 @@ public class OverworldManager : MonoBehaviour {
     private Vector2Int previousTileHover = new Vector2Int();
 
 
+    private List<Vector2Int> dangerTiles;
+
+    public void AddDangerTiles(HashSet<Vector2Int> tiles) {
+        dangerTiles.AddRange(tiles);
+
+        Vector2Int playerTile = HexagonHelpers.GetTileIndexFromObject(player.transform);
+
+        if (tiles.Contains(playerTile)) {
+            playerManager.TakeDamage(1);
+        }
+
+
+    }
+
+    public void ClearDangerTiles() {
+        dangerTiles.Clear();
+    }
+
+
     void Awake() {
 
         if (instance != null && instance != this) {
@@ -88,7 +107,11 @@ public class OverworldManager : MonoBehaviour {
         Generate();
         player = GameObject.FindGameObjectWithTag("Player");
         playerManager = player.GetComponent<PlayerManager>();
+
+        dangerTiles = new List<Vector2Int>();
+
     }
+
 
     private void Start() {
         timing = BattleTimeManager.instance;
@@ -119,6 +142,8 @@ public class OverworldManager : MonoBehaviour {
     {
         OnBossDisable?.Invoke(this, System.EventArgs.Empty);
         EnableRoom(idx);
+
+        dangerTiles.Clear();
 
         for (int i = 0; i < bossAreas.Count; i++) {
             if (bossAreas[i].boss_index == idx) {
@@ -179,6 +204,10 @@ public class OverworldManager : MonoBehaviour {
 
     public void PlayerMovement(Vector2Int index) {
         //if (timing.InBattle()) return; //we don't care about triggering new areas in battle
+
+        if (dangerTiles.Contains(index)) {
+            playerManager.TakeDamage(1);
+        }
 
         //check if we should start boss1battle or boss2battle
         bool wasInZone = PlayerInZone;
