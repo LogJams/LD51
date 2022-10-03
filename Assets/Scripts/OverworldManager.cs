@@ -47,6 +47,7 @@ public class OverworldManager : MonoBehaviour {
 
     // Path outline
     public GameObject pathOutline;
+    public GameObject potentialPathOutline;
 
     List<Zone> areas;
     List<Zone> bossAreas;
@@ -62,6 +63,12 @@ public class OverworldManager : MonoBehaviour {
 
     private List<Vector2Int> currentpath = new List<Vector2Int>();
     private List<GameObject> pathIndicators = new List<GameObject>();
+
+    private List<Vector2Int> nextPath = new List<Vector2Int>();
+    private List<GameObject> nextPathIndicators = new List<GameObject>();
+
+    // Remember previous tile hover so we don't have to compute path finding algorithm every frame
+    private Vector2Int previousTileHover = new Vector2Int();
 
 
     void Awake() {
@@ -106,6 +113,7 @@ public class OverworldManager : MonoBehaviour {
         }
     }
 
+
     public List<Vector2Int> GetNeighbors(Transform tf) {
         return GetWalkableNeighbors(TerrainTypeMap, GetTileIndexFromObject(tf));
     }
@@ -133,18 +141,21 @@ public class OverworldManager : MonoBehaviour {
     }
 
 
-    public void ResetPlayerMovement() {
-        if (currentpath.Count > 0) {
+    public void ResetPlayerMovement()
+    {
+        // Remove all path indicators of the last path segment
+        for (int i = pathIndicators.Count - 1; i >= 0; i--)
+            Destroy(pathIndicators[i]);
+        pathIndicators.Clear();
+
+        // Remove all but the current path tile to let player finish the move
+        if (currentpath.Count > 0) 
+        {
             Vector2Int goalPos = currentpath[currentpath.Count - 1];
             currentpath.Clear();
             currentpath.Add(goalPos);
         }
-        for (int i = pathIndicators.Count - 1; i >= 0; i--) {
-            Destroy(pathIndicators[i]);
-        }
-        pathIndicators.Clear();
     }
-
 
 
     private void Update() {
@@ -161,32 +172,18 @@ public class OverworldManager : MonoBehaviour {
             }
         }
 
-        // Do path stuff
-        if (!playerManager.isMoving)
-        {
-            if (!EventSystem.current.IsPointerOverGameObject() && timing.PlayerActing()) {
-                ClearPath();
-                ShowPath();
-            }
+        // Planning the next path
+        if (!EventSystem.current.IsPointerOverGameObject() && timing.PlayerActing()) {
+            ShowNextPathIndicators();
         }
-        else
+        
+        if (playerManager.isMoving)
         {
             if (Input.GetMouseButtonUp(1))
-            {
-                if (currentpath.Count > 0 && playerManager.isMoving)
-                    EndTurn();
-            }
+                ResetPlayerMovement();
 
             playerManager.MovePlayer(currentpath, pathIndicators);
         }
-    }
-
-    void ClearPath()
-    {
-        foreach (GameObject obj in pathIndicators)
-            Destroy(obj);
-
-        pathIndicators.Clear();
     }
 
     void Cleanup() {
@@ -537,7 +534,7 @@ public class OverworldManager : MonoBehaviour {
     }
 
 
-    void ShowPath()
+    void ShowNextPathIndicators()
     {
         // Show the potential path
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -547,42 +544,69 @@ public class OverworldManager : MonoBehaviour {
         {
             var builder = new StringBuilder();
 
-            Vector2Int start = GetTileIndexFromObject(player.transform);
+            // First path segment starts at player, others at final positions of previous path
+            Vector2Int start;
+            if (currentpath.Count == 0)
+                start = GetTileIndexFromObject(player.transform);
+            else
+                start = currentpath[0];
+
+            // Set goal to the ray cast hit element
             Vector2Int goal = GetTileIndexFromObject(hit.transform);
 
-            List<Vector2Int> path = FindPath(TerrainTypeMap, start, goal, 0, WORLD_HEIGHT - 1, 0, WORLD_WIDTH - 1);
-
-            foreach (Vector2Int wayPoint in path)
+            // Don't need to update if it is the same tile as before
+            if (goal != previousTileHover)
             {
-                GameObject newTile = Instantiate(pathOutline) as GameObject;
-                SetPosition(newTile, wayPoint.x, 0, wayPoint.y);
+                previousTileHover = goal;
 
-                pathIndicators.Add(newTile);
-            }
+                // If it IS a new tile, then we clear the indicated path
+                ClearNextPathIndicators();
 
-            currentpath = path;
+                nextPath = FindPath(TerrainTypeMap, start, goal, 0, WORLD_HEIGHT - 1, 0, WORLD_WIDTH - 1);
+
+                foreach (Vector2Int wayPoint in nextPath)
+                {
+                    GameObject newTile = Instantiate(potentialPathOutline);
+                    SetPosition(newTile, wayPoint.x, 0, wayPoint.y);
+
+                    nextPathIndicators.Add(newTile);
+                }
+            }            
+        } else {
+            // If no tile is hit then we clear the next path
+            nextPath.Clear();
         }
 
-        if (Input.GetMouseButtonUp(0))
+        // Add all the potential way points to the way points on left mouse release
+        if (Input.GetMouseButtonUp(0) && nextPath.Count > 0)
         {
-            if (currentpath.Count > 0 && !playerManager.isMoving)
-                playerManager.isMoving = true;
+            playerManager.isMoving = true;
+
+            // Remove all potential path indicators
+            ClearNextPathIndicators();
+
+            // Add permanent path tiles and indicators
+            for (int i = nextPath.Count-1; i >= 0; i--)
+            {
+                // Instantiate new path outline
+                GameObject newTile = Instantiate(pathOutline);
+                SetPosition(newTile, nextPath[i].x, 0, nextPath[i].y);
+
+                // Add to the current path and path indicators
+                currentpath.Insert(0, nextPath[i]);
+                pathIndicators.Insert(0, newTile);
+            }
         }
     }
 
-    public void EndTurn()
+    void ClearNextPathIndicators()
     {
-        if (currentpath.Count > 0)
+        if (nextPathIndicators.Count > 0)
         {
-            // Clear path except for current goal
-            Vector2Int goalPos = currentpath[currentpath.Count - 1];
-            currentpath.Clear();
-            currentpath.Add(goalPos);
-            
-            for (int i = pathIndicators.Count - 1; i >= 0; i--)
-                Destroy(pathIndicators[i]);
-        
-            pathIndicators.Clear();
+            foreach (GameObject obj in nextPathIndicators)
+                Destroy(obj);
+
+            nextPathIndicators.Clear();
         }
     }
 }
