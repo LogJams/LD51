@@ -17,7 +17,6 @@ public class TurretBoss : MonoBehaviour, Enemy {
 
     Transform playerTransform;
 
-
     public List<ParticleSystem> fireParticles;
     public List<ParticleSystem> smokeParticles;
 
@@ -32,6 +31,8 @@ public class TurretBoss : MonoBehaviour, Enemy {
     private void Awake() {
         tileOutlines = new List<GameObject>();
         attackLocations = new HashSet<Vector2Int>();
+
+        audioSrc.volume = SoundConstants.VOLUME;
     }
     // Start is called before the first frame update
     void Start() {
