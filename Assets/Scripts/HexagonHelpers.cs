@@ -67,6 +67,16 @@ public class HexagonHelpers : MonoBehaviour
         return new Vector2Int(xIdx, zIdx);
     }
 
+    public static Vector2Int GetTileIndexFromTilePosition(Vector3 position)
+    {
+        // Every x position is either an integer or an integer + 0.5
+        // Either way, the integer represents its coordinate (so we can subtract a small amout and round)
+        int xIdx = Mathf.RoundToInt(position.x - 0.1f);
+        int zIdx = Mathf.RoundToInt(position.z * 2 / Mathf.Sqrt(3));
+
+        return new Vector2Int(xIdx, zIdx);
+    }
+
     public static Vector2Int GetTileIndexFromPosition(float x, float z) {
         // Every x position is either an integer or an integer + 0.5
         // Either way, the integer represents its coordinate (so we can subtract a small amout and round)

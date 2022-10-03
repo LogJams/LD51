@@ -17,10 +17,13 @@ public class PlayerManager : MonoBehaviour {
     public bool isMoving = false;
     private float movingSpeed = 3.0f;
 
+    private float movingTimeSinceLastTile = 0.0f;
+
     private CharacterController controller;
     Vector3 movement;
     float verticalSpeed = 0;
 
+    public Vector3 previousTilePosition = new Vector3();
     public Vector3 currentTilePositon = new Vector3();
 
 
@@ -113,10 +116,7 @@ public class PlayerManager : MonoBehaviour {
                 }
 
             }
-
-
         }
-
     }
 
 
@@ -126,11 +126,16 @@ public class PlayerManager : MonoBehaviour {
             return;
         }
 
+        // Increase the moving time
+        movingTimeSinceLastTile += Time.deltaTime;
+
         if (currentpath.Count > 0)
         {
             Vector2Int goalPosition = currentpath.Last();
             Vector3 tilePosition = GetPositionFromIndex(goalPosition);
             Vector3 projectedPlayerPosition = new Vector3(player.transform.position.x, 0, player.transform.position.z);
+
+            float currentToGoalTileDistance = (tilePosition - currentTilePositon).magnitude;
 
             if ((tilePosition - projectedPlayerPosition).magnitude < 0.1)
             {
@@ -138,7 +143,11 @@ public class PlayerManager : MonoBehaviour {
                 OverworldManager.instance.PlayerMovement(goalPosition);
 
                 // Keep track of the current tile position and the previous one
+                previousTilePosition = currentTilePositon;
                 currentTilePositon = tilePosition;
+
+                // Reset the moving time
+                movingTimeSinceLastTile = 0.0f;
 
                 // Remove the way point
                 currentpath.RemoveAt(currentpath.Count - 1);
@@ -156,11 +165,27 @@ public class PlayerManager : MonoBehaviour {
             }
             else
             {
+                // add movement
                 movement = (tilePosition - projectedPlayerPosition).normalized * movingSpeed;
+
+                // leave if we have tried to reach the last tile for too long
+                if (currentpath.Count == 1 && movingTimeSinceLastTile > 2.0f * currentToGoalTileDistance / movingSpeed)
+                {
+                    currentpath.Clear();
+                    currentpath.Add(GetTileIndexFromTilePosition(currentTilePositon));
+                }
             }
         } else
         {
             isMoving = false;
         }
+    }
+
+    public void EndTurn()
+    {
+        if (!isMoving)
+            return;
+
+
     }
 }
