@@ -16,6 +16,9 @@ public class SoundManager : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         pitfallManager = player.GetComponent<PitfallManager>();
         playerManager = player.GetComponent<PlayerManager>();
+
+        disableBoos.volume = SoundConstants.VOLUME;
+        pitfallSound.volume = SoundConstants.VOLUME;
     }
 
     // Start is called before the first frame update
