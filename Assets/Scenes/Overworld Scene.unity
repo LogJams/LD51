@@ -1731,9 +1731,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a441059e77fff8409c98e6a9e63465e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  signpost: {fileID: 5176381762905352935, guid: a43a416a69460304b9dc97b97cadbee8, type: 3}
-  treasure: {fileID: 5176381762905352935, guid: 67d58e7d444bc3e4494627f8855015ce, type: 3}
-  door: {fileID: 5176381762905352935, guid: 541bffbd9d079a24d963f697eca88653, type: 3}
+  healingItem: {fileID: 5176381762905352935, guid: 66e8fe328a2939b4ea8f90fcc52c7163, type: 3}
   simpleEnemy: {fileID: 5940715745552554852, guid: 183a2ab754f418a4c94923cedfd2af60, type: 3}
   turretBoss: {fileID: 4147607205445219921, guid: 54651eaec05b4774b91708ef7c36fd20, type: 3}
   hunterBoss: {fileID: 2817903480033642145, guid: f3706da7aa27a4949b397756a798e93e, type: 3}

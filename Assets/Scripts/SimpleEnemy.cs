@@ -30,6 +30,8 @@ public class SimpleEnemy : MonoBehaviour, Enemy {
         b0 = body.localPosition;
         f0 = foot.localPosition;
 
+        timer = UnityEngine.Random.Range(0, moveTime);
+
     }
 
     // Update is called once per frame
