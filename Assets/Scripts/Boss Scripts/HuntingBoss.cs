@@ -54,6 +54,10 @@ public class HuntingBoss : MonoBehaviour, Enemy {
         BattleTimeManager.instance.OnTimerStart -= OnRoundStart;
         BattleTimeManager.instance.OnTimerEnd -= OnRoundEnd;
 
+        foreach (var ps in fireParticles) {
+            ps.Stop();
+        }
+
         //play some death audio, maybe particle effects
         OnDeath?.Invoke(this, EventArgs.Empty);
 
@@ -151,12 +155,6 @@ public class HuntingBoss : MonoBehaviour, Enemy {
 
             //***** clean up the attack
             // stop the particles and attack points
-            foreach (var ps in fireParticles) {
-                ps.Stop();
-            }
-            foreach (var ps in smokeParticles) {
-                ps.Play();
-            }
 
 
             yield return new WaitForEndOfFrame();
