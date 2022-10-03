@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ReadText : MonoBehaviour, Interactable {
 
-    public void Interact(TMP_Player src) {
+    public void Interact(PlayerManager src) {
         Debug.Log("Interacting with a text source to read it!");
     }
 

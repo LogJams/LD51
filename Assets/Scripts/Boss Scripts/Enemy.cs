@@ -7,4 +7,6 @@ public interface Enemy {
     //returns true if pitfall is used up
     public bool OnPitfallTrap();
 
+
+    public void LoseGem();
 }

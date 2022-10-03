@@ -19,6 +19,8 @@ public class PitfallManager : MonoBehaviour
 
     private Vector3 height = Vector3.up;
 
+    bool unlocked = false;
+
     private enum PitfallStates
     {
         down = 0,
@@ -32,12 +34,21 @@ public class PitfallManager : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
         playerManager = player.GetComponent<PlayerManager>();
+
+        playerManager.OnUnlockPitfall += UnlockPitfall;
+
+    }
+
+    public void UnlockPitfall(System.Object src, System.EventArgs e) {
+        unlocked = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //TODO: check if ability is unlocked
+        if (!unlocked) return;
+
+        
         if (Input.GetKeyUp("p"))
         {
             if (pitfallState == PitfallStates.down)

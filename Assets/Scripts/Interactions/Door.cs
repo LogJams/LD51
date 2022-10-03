@@ -19,7 +19,7 @@ public class Door : MonoBehaviour, Interactable {
         p0 = movingPart.transform.position;
     }
 
-    public void Interact(TMP_Player src) {
+    public void Interact(PlayerManager src) {
         Debug.Log("Interacting with a door to open/close it!");
         if (!changing) {
             StartCoroutine(OpenDoor());
