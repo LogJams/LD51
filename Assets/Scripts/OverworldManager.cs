@@ -383,6 +383,19 @@ public class OverworldManager : MonoBehaviour {
         ZoneDecorator zoneDecorator = GetComponent<ZoneDecorator>();
         for (int i = 0; i < areas.Count; i++) {
             zoneDecorator.DecorateZone(areas[i]);
+
+            if (areas[i].type == ZONE_TYPES.SPAWN) {
+                //put the player in here
+                int x0 = areas[i].x + areas[i].w / 2;
+                int y0 = areas[i].y + areas[i].h / 2;
+                //move the player into the domain
+                GameObject player = GameObject.FindGameObjectWithTag("Player");
+                PlayerManager playerManager = player.GetComponent<PlayerManager>();
+                playerManager.SetCurrentTilePosition(new Vector3(x0, 0, y0 - 2));
+                SetPosition(player, (int)x0, 2.5f, (int)y0 - 2);
+                OnPlayerEnterRoom?.Invoke(areas[i], System.EventArgs.Empty);
+            }
+
         }
 
         //set connections in the TerrainTypeMap data

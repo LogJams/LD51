@@ -49,12 +49,6 @@ public class ZoneDecorator : MonoBehaviour {
         SetPosition(go, (int)x0, 1, (int)y0);
         zone.decorations.Add(go);
 
-        //move the player into the domain
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        PlayerManager playerManager = player.GetComponent<PlayerManager>();
-        playerManager.SetCurrentTilePosition(new Vector3(x0, 0, y0 - 2));
-
-        SetPosition(player, (int)x0, 2.5f, (int)y0 - 2);
     }
 
     void DecorateBoss(Zone zone) {
