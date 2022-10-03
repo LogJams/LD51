@@ -151,6 +151,13 @@ public class OverworldManager : MonoBehaviour {
                 return;
             }
         }
+
+        foreach (Zone z in areas) {
+            if (z.boss_index == idx) {
+                z.boss_index = -1;
+            }
+        }
+
     }
 
 
@@ -163,13 +170,13 @@ public class OverworldManager : MonoBehaviour {
             }
         }
 
-        for (int i = bz.x; i <= bz.x + bz.w; i++) {
-            TerrainTypeMap[i, bz.y] = (int)TerrainTypes.boss;
-            TerrainTypeMap[i, bz.y+bz.h] = (int)TerrainTypes.boss;
+        for (int i = bz.x-1; i <= bz.x + bz.w + 1; i++) {
+            TerrainTypeMap[i, bz.y - 1] = (int)TerrainTypes.boss;
+            TerrainTypeMap[i, bz.y+bz.h + 1] = (int)TerrainTypes.boss;
         }
-        for (int j = bz.y; j <= bz.y + bz.h; j++) {
-            TerrainTypeMap[bz.x, j] = (int)TerrainTypes.boss;
-            TerrainTypeMap[bz.x + bz.w, j] = (int)TerrainTypes.boss;
+        for (int j = bz.y - 1; j <= bz.y + bz.h + 1; j++) {
+            TerrainTypeMap[bz.x - 1, j] = (int)TerrainTypes.boss;
+            TerrainTypeMap[bz.x + bz.w + 1, j] = (int)TerrainTypes.boss;
         }
 
     }
@@ -183,13 +190,13 @@ public class OverworldManager : MonoBehaviour {
             }
         }
 
-        for (int i = bz.x; i <= bz.x + bz.w; i++) {
-            TerrainTypeMap[i, bz.y] = (int)TerrainTypes.grass;
-            TerrainTypeMap[i, bz.y + bz.h] = (int)TerrainTypes.grass;
+        for (int i = bz.x - 1; i <= bz.x + bz.w + 1; i++) {
+            TerrainTypeMap[i, bz.y - 1] = (int)TerrainTypes.grass;
+            TerrainTypeMap[i, bz.y + bz.h + 1] = (int)TerrainTypes.grass;
         }
-        for (int j = bz.y; j <= bz.y + bz.h; j++) {
-            TerrainTypeMap[bz.x, j] = (int)TerrainTypes.grass;
-            TerrainTypeMap[bz.x + bz.w, j] = (int)TerrainTypes.grass;
+        for (int j = bz.y - 1; j <= bz.y + bz.h + 1; j++) {
+            TerrainTypeMap[bz.x - 1, j] = (int)TerrainTypes.grass;
+            TerrainTypeMap[bz.x + bz.w + 1, j] = (int)TerrainTypes.grass;
         }
 
     }
@@ -214,7 +221,7 @@ public class OverworldManager : MonoBehaviour {
         PlayerInZone = false;
         Zone triggeringArea = null;
         foreach (var area in areas) {
-            if (area.x <= index.x && area.x + area.w >= index.x && area.y < index.y && area.y + area.h > index.y) {
+            if (area.x < index.x && area.x + area.w > index.x && area.y < index.y && area.y + area.h > index.y) {
                 //we are in a zone, save it!
                 PlayerInZone = true;
                 triggeringArea = area;
