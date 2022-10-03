@@ -147,6 +147,7 @@ public class TurretBoss : MonoBehaviour, Enemy {
 
             //***** attack now!
             audioSrc.Play(); // this lasts 3 seconds
+
             //play some particle effect + sfx + add smoke
             foreach (var ps in fireParticles) {
                 ps.Play();

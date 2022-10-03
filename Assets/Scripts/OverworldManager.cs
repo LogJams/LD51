@@ -29,6 +29,8 @@ public class OverworldManager : MonoBehaviour {
 
     public event System.EventHandler OnPlayerEnterRoom;
     public event System.EventHandler OnPlayerExitRoom;
+    public event System.EventHandler OnBossDisable;
+
     bool PlayerInZone = true; //track whether we fire the enter/exit event
 
     BattleTimeManager timing;
@@ -122,6 +124,8 @@ public class OverworldManager : MonoBehaviour {
                 return;
             }
         }
+
+        OnBossDisable?.Invoke(this, System.EventArgs.Empty);
     }
 
 
@@ -173,6 +177,11 @@ public class OverworldManager : MonoBehaviour {
         for (int i = pathIndicators.Count - 1; i >= 0; i--)
             Destroy(pathIndicators[i]);
         pathIndicators.Clear();
+
+        // Remove all next path indicators of the last path segment
+        for (int i = nextPathIndicators.Count - 1; i >= 0; i--)
+            Destroy(nextPathIndicators[i]);
+        nextPathIndicators.Clear();
 
         // Remove all but the current path tile to let player finish the move
         if (currentpath.Count > 0) 
