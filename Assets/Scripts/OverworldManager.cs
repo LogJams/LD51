@@ -45,8 +45,6 @@ public class OverworldManager : MonoBehaviour {
 
     public int CHUNK_SIZE = 15;
 
-    int NUM_BOSS_ZONES = 3;
-
     //define the fixed locations here, then we WFC the rest
     public List<GameObject> terrainHexes;
     float Y_SPACING = 0.866024540378f; //sqrt(3)/2
@@ -516,8 +514,6 @@ public class OverworldManager : MonoBehaviour {
         //keep track of the degrees for initial assignment
         int minDegree = areas.Count + 1;
         int minDegreeIdx = -1;
-        int maxDegree = 0;
-        int maxDegreeIdx = -1;
         List<int> unassignedAreas = new List<int>();
 
         for (int i = 0; i < areas.Count; i++) {
