@@ -54,6 +54,9 @@ public class PlayerManager : MonoBehaviour
 
             if ((tilePosition - projectedPlayerPosition).magnitude < 0.1)
             {
+                //tell the game we arrived at a new tile
+                OverworldManager.instance.PlayerMovement(goalPosition);
+
                 // Keep track of the current tile position and the previous one
                 currentTilePositon = tilePosition;
 

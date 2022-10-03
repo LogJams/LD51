@@ -6,23 +6,16 @@ using static HexagonHelpers;
 
 public class ZoneDecorator : MonoBehaviour {
 
-    public List<GameObject> spawnRequired;
+    public GameObject signpost;
+    public GameObject treasure;
+    public GameObject door;
+    public GameObject simpleEnemy;
 
-    public List<GameObject> bossRequired;
 
-    public List<GameObject> enemyRequired;
+    public GameObject turretBoss;
+    public GameObject hunterBoss;
 
-    public List<GameObject> friendlyRequired;
-
-    List<int> bossRoomScenes = new List<int> {3, 4, 5 };
-
-    public bool RemoveBossScene(int idx) {
-        if (bossRoomScenes.Contains(idx)) {
-            bossRoomScenes.Remove(idx);
-            return true;
-        }
-        return false;
-    }
+    int bossSceneIndex = 0;
 
     public void DecorateZone(Zone zone) {
         zone.decorations = new List<GameObject>();
@@ -51,7 +44,7 @@ public class ZoneDecorator : MonoBehaviour {
         float y0 = zone.y + (float)zone.h / 2;
 
         //spawn objects
-        GameObject go = Instantiate(spawnRequired[0], this.transform );
+        GameObject go = Instantiate(signpost, this.transform );
         SetPosition(go, (int)x0, 1, (int)y0);
         zone.decorations.Add(go);
 
@@ -68,14 +61,29 @@ public class ZoneDecorator : MonoBehaviour {
         float y0 = zone.y + (float)zone.h / 2;
 
         //spawn objects
-        GameObject go = Instantiate(bossRequired[0], this.transform);
+        GameObject go = Instantiate(treasure, this.transform);
         SetPosition(go, (int)x0, 1, (int)y0);
         zone.decorations.Add(go);
-        
-        Teleport tele = go.GetComponent<Teleport>();
-        if (tele != null) {
-            tele.sceneIndex = bossRoomScenes[Random.Range(0, bossRoomScenes.Count)]; // boss rooms start at index 3 in the room loader order
+
+
+
+
+
+        //spawn the boss
+        if (bossSceneIndex == 0) {
+            GameObject boss = Instantiate(turretBoss, this.transform);
+            SetPosition(boss, (int)(x0 + 3), 0, (int)y0);
+            zone.decorations.Add(go);
+            BattleTimeManager.instance.SetBoss1(boss.GetComponent<TurretBoss>());
         }
+        if (bossSceneIndex == 1) {
+            GameObject boss = Instantiate(hunterBoss, this.transform);
+            SetPosition(boss, (int)(x0 + 3), 0, (int)y0);
+            zone.decorations.Add(go);
+            BattleTimeManager.instance.SetBoss2(boss.GetComponent<HuntingBoss>());
+        }
+        bossSceneIndex++;
+        zone.boss_index = bossSceneIndex; // 1 or 2 for boss1 and boss2
     }
 
     void DecorateEnemy(Zone zone) {
@@ -83,9 +91,12 @@ public class ZoneDecorator : MonoBehaviour {
         float y0 = zone.y + (float)zone.h / 2;
 
         //spawn objects
-        GameObject go = Instantiate(enemyRequired[0], this.transform);
+        GameObject go = Instantiate(simpleEnemy, this.transform);
         SetPosition(go, (int)x0, 1, (int)y0);
         zone.decorations.Add(go);
+
+        go.GetComponent<SimpleEnemy>().parentZone = zone;
+
     }
 
     void DecorateFriendly(Zone zone) {
@@ -93,7 +104,7 @@ public class ZoneDecorator : MonoBehaviour {
         float y0 = zone.y + (float)zone.h / 2;
 
         //spawn objects
-        GameObject go = Instantiate(friendlyRequired[0], this.transform);
+        GameObject go = Instantiate(door, this.transform);
         SetPosition(go, (int)x0, 1, (int)y0);
         zone.decorations.Add(go);
     }

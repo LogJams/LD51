@@ -8,6 +8,8 @@ using static HexagonHelpers;
 
 public class HuntingBoss : MonoBehaviour, Enemy {
 
+    public event EventHandler OnDeath;
+
     public Transform hunter;
     public GameObject tileOutline;
 
@@ -33,8 +35,17 @@ public class HuntingBoss : MonoBehaviour, Enemy {
     // Start is called before the first frame update
     void Start() {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+    }
+
+    public void Awaken() {
         BattleTimeManager.instance.OnTimerStart += OnRoundStart;
         BattleTimeManager.instance.OnTimerEnd += OnRoundEnd;
+    }
+
+    public void Die() {
+        BattleTimeManager.instance.OnTimerStart -= OnRoundStart;
+        BattleTimeManager.instance.OnTimerEnd -= OnRoundEnd;
+        OnDeath?.Invoke(this, EventArgs.Empty);
     }
 
     public void OnRoundStart(System.Object src, EventArgs e) {

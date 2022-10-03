@@ -5,6 +5,8 @@ using UnityEngine;
 using static TerrainHelpers;
 using static HexagonHelpers;
 
+using UnityEngine.EventSystems;
+
 //spawn is where you start, boss is the location of the bosses, enemy is enemies+treasure, and friendly is friends
 public enum ZONE_TYPES {
     NONE, SPAWN, BOSS, ENEMY, FRIENDLY
@@ -15,9 +17,18 @@ public class Zone {
     public ZONE_TYPES type;
     public int degree;
     public List<GameObject> decorations;
+
+    public int boss_index = -1; //bad bad code :-)
 }
 
+
+
 public class OverworldManager : MonoBehaviour {
+
+    public static OverworldManager instance;
+
+    BattleTimeManager timing;
+
     //parameters for hexagon geometry
     public int WORLD_WIDTH = 70;
     public int WORLD_HEIGHT = 70;
@@ -38,6 +49,7 @@ public class OverworldManager : MonoBehaviour {
     public GameObject pathOutline;
 
     List<Zone> areas;
+    List<Zone> bossAreas;
 
     //store the map and metadata about terrain generation here
     int[,] TerrainTypeMap;
@@ -52,10 +64,61 @@ public class OverworldManager : MonoBehaviour {
     private List<GameObject> pathIndicators = new List<GameObject>();
 
     void Awake() {
+
+        if (instance != null && instance != this) {
+            Destroy(this);
+            return;
+        }
+        
+        instance = this;
+        bossAreas = new List<Zone>();
+
         Generate();
         player = GameObject.FindGameObjectWithTag("Player");
         playerManager = player.GetComponent<PlayerManager>();
     }
+
+    private void Start() {
+        timing = BattleTimeManager.instance;
+    }
+
+
+    public List<Vector2Int> GetBoundedNeighbors(Transform tf, Zone zone) {
+        List<Vector2Int> nbhd = GetNeighbors(tf);
+        //remove all elements not in zone z
+        for (int i = nbhd.Count - 1; i >= 0; i--) {
+            Vector2Int idx = nbhd[i];
+            if (idx.x < zone.x || idx.x > zone.x + zone.w || idx.y < zone.y || idx.y > zone.y + zone.h) {
+                nbhd.RemoveAt(i);
+            }
+        }
+        return nbhd;
+    }
+
+
+    public List<Vector2Int> GetNeighbors(Transform tf) {
+        return GetWalkableNeighbors(TerrainTypeMap, GetTileIndexFromObject(tf));
+    }
+
+
+    public void PlayerMovement(Vector2Int index) {       
+        //check if we should start boss1battle or boss2battle
+        foreach (var area in bossAreas) {
+            if (area.x <= index.x && area.x + area.w >= index.x && area.y < index.y && area.y + area.h > index.y) {
+                //we entered a boss area, figure out which one
+                if (area.boss_index == 1) {
+                    BattleTimeManager.instance.StartBoss1Battle();
+                }
+                if (area.boss_index == 2) {
+                    BattleTimeManager.instance.StartBoss2Battle();
+                }
+                break;
+            }
+        }
+
+    }
+
+
 
     private void Update() {
         //only enable chunks near the player
@@ -74,8 +137,10 @@ public class OverworldManager : MonoBehaviour {
         // Do path stuff
         if (!playerManager.isMoving)
         {
-            ClearPath();
-            ShowPath();
+            if (!EventSystem.current.IsPointerOverGameObject() && timing.PlayerActing()) {
+                ClearPath();
+                ShowPath();
+            }
         }
         else
         {
@@ -164,7 +229,8 @@ public class OverworldManager : MonoBehaviour {
                     failed = true;
                     break;
                 } else {
-                    newZone.x = x; newZone.y = y;
+                    newZone.x = x;
+                    newZone.y = y;
                     areas.Add(newZone);
                 }
             }
@@ -333,8 +399,10 @@ public class OverworldManager : MonoBehaviour {
         //overwrite occupied tiles with something not navigable
         for (int i = 0; i < areas.Count; i++) {
             foreach (var decor in areas[i].decorations) {
-                Vector2Int indices = GetTileIndexFromObject(decor.transform);
-                TerrainTypeMap[indices[0], indices[1]] = (int)TerrainTypes.water;
+                foreach (var obstacle in decor.GetComponentsInChildren<ImpassbileObject>()) {
+                    Vector2Int indices = GetTileIndexFromObject(obstacle.transform);
+                    TerrainTypeMap[indices[0], indices[1]] = (int)TerrainTypes.water;
+                }
             }
         }
 
@@ -410,6 +478,7 @@ public class OverworldManager : MonoBehaviour {
             int idx = unassignedAreas[Random.Range(0, unassignedAreas.Count)];
             unassignedAreas.Remove(idx);
             areas[idx].type = ZONE_TYPES.BOSS;
+            bossAreas.Add(areas[idx]);
         }
         //remaining rooms will be enemies
         for (int i = 0; i < unassignedAreas.Count; i++) {

@@ -18,12 +18,23 @@ public class UI_TimerPanel : MonoBehaviour {
     public void Start() {
         timer = BattleTimeManager.instance;
         button.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "START";
+        button.interactable = false;
 
         timer.OnTimerStart += StartOfRound;
         timer.OnTimerEnd += EndOfRound;
+        timer.OnBattleStart += OnFightStart;
+        timer.OnBattleEnd += OnFightEnd;
 
     }
 
+
+    public void OnFightStart(System.Object src, EventArgs e) {
+        button.interactable = true;
+    }
+
+    public void OnFightEnd(System.Object src, EventArgs e) {
+        button.interactable = false;
+    }
 
     public void OnButtonClick() {
         timer.OnButtonClick();

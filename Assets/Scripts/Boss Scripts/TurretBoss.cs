@@ -6,7 +6,9 @@ using System;
 
 using static HexagonHelpers;
 
-public class TurretBoss : MonoBehaviour {
+public class TurretBoss : MonoBehaviour, Enemy {
+
+    public event EventHandler OnDeath;
 
     public Transform turret;
     public GameObject tileOutline;
@@ -27,8 +29,23 @@ public class TurretBoss : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+    }
+
+    public bool OnPitfallTrap() {
+        //pitfall trap does nothing but destroy the trap
+        return true;
+    }
+
+    //subscribe to the battle events!
+    public void Awaken() {
         BattleTimeManager.instance.OnTimerStart += OnRoundStart;
         BattleTimeManager.instance.OnTimerEnd += OnRoundEnd;
+    }
+
+    public void Die() {
+        BattleTimeManager.instance.OnTimerStart -= OnRoundStart;
+        BattleTimeManager.instance.OnTimerEnd -= OnRoundEnd;
+        OnDeath?.Invoke(this, EventArgs.Empty);
     }
 
     public void OnRoundStart(System.Object src, EventArgs e) {
@@ -37,6 +54,7 @@ public class TurretBoss : MonoBehaviour {
 
     public void OnRoundEnd(System.Object src, EventArgs e) {
         StopAllCoroutines();
+        Cleanup();
     }
 
    
@@ -57,7 +75,7 @@ public class TurretBoss : MonoBehaviour {
             //highlight the hexagons in a line -- get this from the attack pattern
             float x0 = turret.position.x;
             float z0 = turret.position.z;
-            Quaternion qf = Quaternion.LookRotation(lookTarget.normalized, Vector3.up);
+            Quaternion qf = Quaternion.LookRotation(lookTarget, Vector3.up);
 
             //first we will get a vector of attack locations, the HashSet ensures they're unique (10/10 lazyness)
             attackLocations.Clear();
@@ -90,25 +108,28 @@ public class TurretBoss : MonoBehaviour {
             //wait for the attack to finish
             yield return new WaitForSeconds(attackTime);
 
-            //***** clean up the attack
-            // stop the particles and attack points
-            foreach (var ps in fireParticles) {
-                ps.Stop();
-            }
-            foreach (var ps in smokeParticles) {
-                ps.Play();
-            }
-            //clean up tile outlines
-            for (int i = tileOutlines.Count-1; i >= 0; i--) {
-                Destroy(tileOutlines[i]);
-            }
-            tileOutlines.Clear();
+            Cleanup();
 
             yield return new WaitForEndOfFrame();
         }
         yield return null;
     }
 
+    void Cleanup() {
+        //***** clean up the attack
+        // stop the particles and attack points
+        foreach (var ps in fireParticles) {
+            ps.Stop();
+        }
+        foreach (var ps in smokeParticles) {
+            ps.Play();
+        }
+        //clean up tile outlines
+        for (int i = tileOutlines.Count - 1; i >= 0; i--) {
+            Destroy(tileOutlines[i]);
+        }
+        tileOutlines.Clear();
+    }
 
 
     public IEnumerator LookCoroutine(Vector3 lookDir, float duration) {

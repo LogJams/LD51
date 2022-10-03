@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 979147060735897621}
   - component: {fileID: 724762560293858675}
   - component: {fileID: 2915664859617249869}
+  - component: {fileID: 692239496340655620}
   m_Layer: 0
   m_Name: Signpost
   m_TagString: Untagged
@@ -108,5 +109,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64d4b5fc4c0b5434f92ca8f19b108f9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &692239496340655620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5176381762905352935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01a94aa9135be284a99b9b988152238c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
