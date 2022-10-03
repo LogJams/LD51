@@ -16,9 +16,17 @@ public class UnlockPitfall : MonoBehaviour, Interactable {
 
     public void Interact(PlayerManager src) {
 
-        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>().UnlockPitfall();
+        //GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>().UnlockPitfall();
 
-        Destroy(this.gameObject);
+        //Destroy(this.gameObject);
+    }
+
+    public void OnTriggerEnter(Collider other) {
+        if (other.CompareTag("Player")) {
+            other.GetComponent<PlayerManager>().UnlockPitfall();
+
+            Destroy(this.gameObject);
+        }
     }
 
 }
