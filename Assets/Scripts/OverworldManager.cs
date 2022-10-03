@@ -58,10 +58,11 @@ public class OverworldManager : MonoBehaviour {
     GameObject[,] chunks;
 
     GameObject player;
-    private PlayerManager playerManager;
+    PlayerManager playerManager;
 
     private List<Vector2Int> currentpath = new List<Vector2Int>();
     private List<GameObject> pathIndicators = new List<GameObject>();
+
 
     void Awake() {
 
@@ -95,27 +96,53 @@ public class OverworldManager : MonoBehaviour {
         return nbhd;
     }
 
+    //spaghetti spaghetti
+    public void BossKilled(int idx) {
+       for (int i = 0; i < bossAreas.Count; i++) {
+            if (bossAreas[i].boss_index == idx) {
+                bossAreas.RemoveAt(i);
+                return;
+            }
+        }
+    }
 
     public List<Vector2Int> GetNeighbors(Transform tf) {
         return GetWalkableNeighbors(TerrainTypeMap, GetTileIndexFromObject(tf));
     }
 
 
-    public void PlayerMovement(Vector2Int index) {       
+    public void PlayerMovement(Vector2Int index) {
+        if (timing.InBattle()) return; //we don't care about triggering new areas in battle
+
         //check if we should start boss1battle or boss2battle
         foreach (var area in bossAreas) {
             if (area.x <= index.x && area.x + area.w >= index.x && area.y < index.y && area.y + area.h > index.y) {
                 //we entered a boss area, figure out which one
                 if (area.boss_index == 1) {
                     BattleTimeManager.instance.StartBoss1Battle();
+                    ResetPlayerMovement();
                 }
                 if (area.boss_index == 2) {
                     BattleTimeManager.instance.StartBoss2Battle();
+                    ResetPlayerMovement();
                 }
                 break;
             }
         }
 
+    }
+
+
+    public void ResetPlayerMovement() {
+        if (currentpath.Count > 0) {
+            Vector2Int goalPos = currentpath[currentpath.Count - 1];
+            currentpath.Clear();
+            currentpath.Add(goalPos);
+        }
+        for (int i = pathIndicators.Count - 1; i >= 0; i--) {
+            Destroy(pathIndicators[i]);
+        }
+        pathIndicators.Clear();
     }
 
 
@@ -166,7 +193,7 @@ public class OverworldManager : MonoBehaviour {
 
         //destroy all children (hexagons)
         while (transform.childCount > 0) {
-            DestroyImmediate(transform.GetChild(0).gameObject);
+            Destroy(transform.GetChild(0).gameObject);
         }
 
         //create TerrainTypeMap and initialize to -1 (undefined)
@@ -416,11 +443,11 @@ public class OverworldManager : MonoBehaviour {
             }
         }
 
-        Debug.Log("Generation complete @ " + (Time.realtimeSinceStartup - t0) * 1000 + " ms");
+        //Debug.Log("Generation complete @ " + (Time.realtimeSinceStartup - t0) * 1000 + " ms");
 
         SpawnTerrain();
 
-        Debug.Log("Terrain spawned at " + (Time.realtimeSinceStartup - t0) * 1000 + " ms");
+       // Debug.Log("Terrain spawned at " + (Time.realtimeSinceStartup - t0) * 1000 + " ms");
 
     }
 

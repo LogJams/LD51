@@ -50,7 +50,7 @@ public class TMP_Player : MonoBehaviour {
                 distance.y = 0;
 
                 if (target != null && distance.sqrMagnitude <= interactionRange*interactionRange) {
-                    target.Interact(this);
+                    //.Interact(this); broke this to fix game
                 }
             }
 

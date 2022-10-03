@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Lootable : MonoBehaviour, Interactable {
 
-    public void Interact(TMP_Player src) {
+    public void Interact(PlayerManager src) {
         Debug.Log("Interacting with lootable thing!");
     }
 

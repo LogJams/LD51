@@ -11,16 +11,13 @@ public class BattleTimeManager : MonoBehaviour {
     public event EventHandler OnTimerStart;
     public event EventHandler OnTimerEnd;
 
-    //    public EventHandler OnBattleStartBoss1;
-    //    public EventHandler OnBattleStartBoss2;
-
     public EventHandler OnBattleStart;
     public EventHandler OnBattleEnd;
 
     TurretBoss boss1;
     HuntingBoss boss2;
-    
 
+    public bool BOSS_2_FIGHT = false;
 
     bool inBattleMode = false;
 
@@ -32,16 +29,22 @@ public class BattleTimeManager : MonoBehaviour {
         return playerTurn || !inBattleMode;
     }
 
+    public bool InBattle() {
+        return inBattleMode;
+    }
+
     public float SecondsRemaining() {
         return time;
     }
 
     public void SetBoss1(TurretBoss boss) {
         boss1 = boss;
+        boss.OnDeath += Boss1Killed;
         boss.OnDeath += EndBattle;
     }
     public void SetBoss2(HuntingBoss boss) {
         boss2 = boss;
+        boss.OnDeath += Boss2Killed;
         boss.OnDeath += EndBattle;
     }
 
@@ -55,11 +58,22 @@ public class BattleTimeManager : MonoBehaviour {
         inBattleMode = true;
         boss2.Awaken();
         OnBattleStart?.Invoke(this, EventArgs.Empty);
+        BOSS_2_FIGHT = true; //this is the final fight
+    }
+
+    public void Boss1Killed(System.Object src, EventArgs e) {
+        OverworldManager.instance.BossKilled(1);
+    }
+    public void Boss2Killed(System.Object src, EventArgs e) {
+        OverworldManager.instance.BossKilled(2);
+
     }
 
     public void EndBattle(System.Object src, EventArgs e) {
         OnBattleEnd?.Invoke(this, EventArgs.Empty);
         inBattleMode = false;
+        playerTurn = false;
+        time = 10;
     }
 
 
@@ -91,6 +105,7 @@ public class BattleTimeManager : MonoBehaviour {
     void TimeOver() {
         time = 10f;
         playerTurn = false;
+        OverworldManager.instance.ResetPlayerMovement();
         OnTimerEnd?.Invoke(this, EventArgs.Empty);
     }
 

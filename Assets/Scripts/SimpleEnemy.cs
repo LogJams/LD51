@@ -53,6 +53,9 @@ public class SimpleEnemy : MonoBehaviour, Enemy {
         return true;
     }
 
+    public void LoseGem() {
+        //do nothing
+    }
 
     private void Die() {
         //do some animation or particles or something
