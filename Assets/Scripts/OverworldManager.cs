@@ -117,15 +117,17 @@ public class OverworldManager : MonoBehaviour {
     }
 
     //spaghetti spaghetti
-    public void BossKilled(int idx) {
-       for (int i = 0; i < bossAreas.Count; i++) {
+    public void BossKilled(int idx)
+    {
+        OnBossDisable?.Invoke(this, System.EventArgs.Empty);
+
+        for (int i = 0; i < bossAreas.Count; i++) {
             if (bossAreas[i].boss_index == idx) {
                 bossAreas.RemoveAt(i);
                 return;
             }
         }
 
-        OnBossDisable?.Invoke(this, System.EventArgs.Empty);
     }
 
 
