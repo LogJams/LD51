@@ -527,8 +527,15 @@ public class OverworldManager : MonoBehaviour {
                 int cx = (int) (i / CHUNK_SIZE);
                 int cy = (int) (j / CHUNK_SIZE);
 
-                Instantiate(terrainHexes[TerrainTypeMap[i, j]], pos, Quaternion.identity, chunks[cx,cy].transform);
+                GameObject instance = Instantiate(terrainHexes[TerrainTypeMap[i, j]], pos, Quaternion.identity, chunks[cx,cy].transform);
 
+                // Could look cool if the cliffs have slightly different sizes
+                if (TerrainTypeMap[i, j] == (int)TerrainTypes.cliff)
+                {
+                    float lift = Random.Range(0.0f, 0.5f);
+                    instance.transform.localScale += new Vector3(0, lift, 0);
+                    instance.transform.position += new Vector3(0, 0.5f * lift, 0);
+                }
             }
         }
     }
